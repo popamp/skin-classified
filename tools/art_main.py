@@ -1,6 +1,10 @@
 """Sheets of the main window: transport buttons."""
+import math
 
 BLACK = "#000000"
+# Popamp's logo: the bolt's outline around the knob's centre and the metal's tones round half the knob (7.5 degrees each)
+BOLT = ((-10.43, -59.4), (23.46, -59.4), (0, -19.92), (30.91, -19.92), (-19.74, 59.4), (-3.72, 3.54), (-30.91, 3.54))
+KNOB_TONES = (137, 134, 137, 147, 168, 192, 208, 221, 224, 221, 217, 217, 220, 223, 222, 210, 189, 165, 145, 136, 133, 136, 139, 140)
 
 
 def cream_face(s, x, y, w, h, icon_tol=10):
@@ -87,18 +91,23 @@ def shufrep(s):
 
 
 def popamp_mark(s, cx, cy, r):
-    """Popamp's mark (a pink ring round a yellow sun) where the reference had its maker's logo."""
-    s.n += 1
-    sun = f"sun{s.n}"
-    s.defs.append(
-        f'<radialGradient id="{sun}" cx="0.45" cy="0.38" r="0.7">'
-        '<stop offset="0" stop-color="#fff3c4"/><stop offset="0.45" stop-color="#ffd23f"/>'
-        '<stop offset="1" stop-color="#f0a800"/></radialGradient>'
-    )
+    """Popamp's logo (a brushed metal knob with a lightning bolt, in a pink ring) where the reference had its maker's."""
     s.add(f'<circle cx="{cx + 0.6}" cy="{cy + 0.8}" r="{r + 0.4}" fill="#000000" opacity="0.45"/>')
-    s.add(f'<circle cx="{cx}" cy="{cy}" r="{r * 0.84}" fill="none" stroke="#ff3d6e" stroke-width="{r * 0.3:.2f}"/>')
+    s.add(f'<circle cx="{cx}" cy="{cy}" r="{r * 0.87}" fill="none" stroke="#ff3d6e" stroke-width="{r * 0.2:.2f}"/>')
     s.add(f'<circle cx="{cx}" cy="{cy}" r="{r * 0.99}" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.5"/>')
-    s.add(f'<circle cx="{cx}" cy="{cy}" r="{r * 0.62}" fill="url(#{sun})"/>')
+    knob = r * 0.8
+    for i, tone in enumerate(KNOB_TONES * 2):
+        a0, a1 = (math.radians(i * 7.5 + da) for da in (0, 9))  # each wedge overlaps the next: no seams
+        s.path(
+            f"M{cx} {cy}L{cx + knob * math.cos(a0):.2f} {cy + knob * math.sin(a0):.2f}"
+            f"A{knob} {knob} 0 0 1 {cx + knob * math.cos(a1):.2f} {cy + knob * math.sin(a1):.2f}Z",
+            f"#{tone:02x}{tone:02x}{tone + 4:02x}",
+        )
+    k = r / 105
+    bolt = " ".join(f"{cx + px * k:.2f},{cy + py * k:.2f}" for px, py in BOLT)
+    miter = 'stroke-linejoin="miter" stroke-miterlimit="4"'  # blunts the tip, which would poke through the ring
+    s.add(f'<polygon points="{bolt}" fill="none" stroke="#ffd23f" stroke-opacity="0.4" stroke-width="2" {miter}/>')
+    s.add(f'<polygon points="{bolt}" fill="#241140" stroke="#ffd23f" stroke-width="0.8" {miter}/>')
 
 
 def socket(s, frame):

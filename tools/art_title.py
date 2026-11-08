@@ -15,22 +15,24 @@ GLYPHS = {
 GLYPH_BG = {"titlebar": 141, "eqmain": 104}  # a column of plain background beside the lettering
 INACTIVE_Y = {"titlebar": 15, "eqmain": 149}
 NAME = "POPAMP"
+KERN = {"PO": -1, "PA": -2}  # the P has a spare column; the A slopes away and its leg goes under the P's bowl
 
 
-def name_width():
-    return sum(GLYPHS[c][2] for c in NAME)
+def advances():
+    """How far each letter of the name moves the pen."""
+    return [GLYPHS[c][2] + KERN.get(NAME[i:i + 2], 0) for i, c in enumerate(NAME)]
 
 
 def name(s, cx, y, active=True):
     """POPAMP centred on `cx`, its letters' rows 4..10 drawn from `y + 4`."""
-    x = round(cx - name_width() / 2)
-    for c in NAME:
+    x = round(cx - sum(advances()) / 2)
+    for c, advance in zip(NAME, advances()):
         sheet, gx, gw = GLYPHS[c]
         gy = 0 if active else INACTIVE_Y[sheet]
         with s.source(ref=sheet, dx=gx - x, dy=gy - y, absolute=True):
             rects = s.pix_mask(x, y + 4, gw, 7, f"col:{GLYPH_BG[sheet] - (gx - x)}", 14)
         s.add_pixels(rects)
-        x += gw
+        x += advance
 
 
 def gold_lines(s, x, y, length):
