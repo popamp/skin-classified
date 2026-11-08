@@ -131,6 +131,10 @@ class Sheet:
         for i in range(x, x + w):
             self.rect(i, y, 1.5 if i < x + w - 1 else 1, h, self.prof(i, y, 1, h, "y", h))
 
+    def frame(self, x, y, w, h):
+        """A gradient across an area, from the 1-pixel frame round it (to paint over what was in it)."""
+        return self._fit("frame", (x, y, w, h), lambda img: _fit().lin_frame(img, x, y, w, h))
+
     def color(self, x, y, w=1, h=1):
         return self._fit("color", (x, y, w, h), lambda img: _fit().mean(img, x, y, w, h))
 

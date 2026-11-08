@@ -1,10 +1,10 @@
 """Sheets of the main window: transport buttons."""
-import math
 
 BLACK = "#000000"
-# Popamp's logo: the bolt's outline around the knob's centre and the metal's tones round half the knob (7.5 degrees each)
+# The bolt of Popamp's logo, as an outline around its centre (118.8 units high)
 BOLT = ((-10.43, -59.4), (23.46, -59.4), (0, -19.92), (30.91, -19.92), (-19.74, 59.4), (-3.72, 3.54), (-30.91, 3.54))
-KNOB_TONES = (137, 134, 137, 147, 168, 192, 208, 221, 224, 221, 217, 217, 220, 223, 222, 210, 189, 165, 145, 136, 133, 136, 139, 140)
+LOGO_CX, LOGO_CY = 253.5, 94
+LOGO_AREA = (241, 82, 26, 25)  # where the reference's logo was: plain metal now
 
 
 def cream_face(s, x, y, w, h, icon_tol=10):
@@ -90,24 +90,24 @@ def shufrep(s):
         lamp_sprite(s, (69, y, 23, 12), [(71, y, 21, 11)], y == 73)
 
 
-def popamp_mark(s, cx, cy, r):
-    """Popamp's logo (a brushed metal knob with a lightning bolt, in a pink ring) where the reference had its maker's."""
-    s.add(f'<circle cx="{cx + 0.6}" cy="{cy + 0.8}" r="{r + 0.4}" fill="#000000" opacity="0.45"/>')
-    s.add(f'<circle cx="{cx}" cy="{cy}" r="{r * 0.87}" fill="none" stroke="#ff3d6e" stroke-width="{r * 0.2:.2f}"/>')
-    s.add(f'<circle cx="{cx}" cy="{cy}" r="{r * 0.99}" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.5"/>')
-    knob = r * 0.8
-    for i, tone in enumerate(KNOB_TONES * 2):
-        a0, a1 = (math.radians(i * 7.5 + da) for da in (0, 9))  # each wedge overlaps the next: no seams
-        s.path(
-            f"M{cx} {cy}L{cx + knob * math.cos(a0):.2f} {cy + knob * math.sin(a0):.2f}"
-            f"A{knob} {knob} 0 0 1 {cx + knob * math.cos(a1):.2f} {cy + knob * math.sin(a1):.2f}Z",
-            f"#{tone:02x}{tone:02x}{tone + 4:02x}",
-        )
-    k = r / 105
-    bolt = " ".join(f"{cx + px * k:.2f},{cy + py * k:.2f}" for px, py in BOLT)
-    miter = 'stroke-linejoin="miter" stroke-miterlimit="4"'  # blunts the tip, which would poke through the ring
-    s.add(f'<polygon points="{bolt}" fill="none" stroke="#ffd23f" stroke-opacity="0.4" stroke-width="2" {miter}/>')
-    s.add(f'<polygon points="{bolt}" fill="#241140" stroke="#ffd23f" stroke-width="0.8" {miter}/>')
+def popamp_bolt(s, cx, cy, height):
+    """The bolt of Popamp's logo, sunk into the metal: dark rim on top, light lip below, lit from the top left."""
+    k = height / 118.8
+    outline = " ".join(f"{cx + px * k:.2f},{cy + py * k:.2f}" for px, py in BOLT)
+    s.defs.append(
+        '<linearGradient id="boltfill" x1="0" y1="0" x2="1" y2="1">'
+        '<stop offset="0" stop-color="#8a4a08"/><stop offset="0.45" stop-color="#ee9414"/>'
+        '<stop offset="1" stop-color="#ffd23f"/></linearGradient>'
+    )
+    miter = 'stroke-linejoin="miter" stroke-miterlimit="4"'
+    s.add(f'<polygon points="{outline}" transform="translate(0.9 0.9)" fill="#d4d4e2" stroke="#d4d4e2" stroke-width="0.8" {miter}/>')
+    s.add(f'<polygon points="{outline}" fill="#000000" stroke="#000000" stroke-width="1.4" {miter}/>')
+    s.add(f'<polygon points="{outline}" fill="url(#boltfill)"/>')
+    # the shadow the upper edges cast on the sunken face: everything but the bolt moved down and right, clipped to the bolt
+    s.defs.append(f'<clipPath id="boltclip"><polygon points="{outline}"/></clipPath>')
+    x, y, w, h = LOGO_AREA
+    moved = "L".join(f"{cx + px * k + 1.1:.2f} {cy + py * k + 1.1:.2f}" for px, py in BOLT)
+    s.add(f'<path d="M{x} {y}h{w}v{h}h{-w}ZM{moved}Z" fill="#000000" fill-rule="evenodd" opacity="0.55" clip-path="url(#boltclip)"/>')
 
 
 def socket(s, frame):
@@ -124,7 +124,7 @@ def main(s):
     import art_title
 
     art_title.main_strip(s, 0, True, x0=0)
-    skip = [(10, 20, 256, 34), (10, 53, 92, 15), (14, 86, 118, 22), (134, 87, 25, 20), (161, 89, 79, 15), (238, 81, 32, 31), (217, 56, 49, 15), (106, 59, 67, 10), (12, 72, 6, 10), (259, 72, 8, 10)]
+    skip = [(10, 20, 256, 34), (10, 53, 92, 15), (14, 86, 118, 22), (134, 87, 25, 20), (161, 89, 79, 15), (217, 56, 49, 15), (106, 59, 67, 10), (12, 72, 6, 10), (259, 72, 8, 10)] + [LOGO_AREA]
     s.cols(0, 14, 7, 102)
     s.rows(7, 14, 261, 102, 16, skip)
     s.cols(268, 14, 7, 102)
@@ -154,7 +154,8 @@ def main(s):
         cream_button(s, 108, 88, 22, 18)
     with s.source(ref="cbuttons", dx=114 - 136, dy=-89):
         cream_button(s, 136, 89, 22, 16)
-    popamp_mark(s, 252.5, 94.5, 10)
+    s.rect(*LOGO_AREA, s.frame(*LOGO_AREA))
+    popamp_bolt(s, LOGO_CX, LOGO_CY, 22)
     resize_grip(s)
 
 

@@ -94,6 +94,13 @@ def lin_ring(img, x, y, w, h, top_left):
     return lin_points(xs, ys, cs)
 
 
+def lin_frame(img, x, y, w, h):
+    """A gradient across an area, fitted to the 1-pixel frame just outside it."""
+    parts = [_points(img, x, y - 1, w, 1), _points(img, x, y + h, w, 1), _points(img, x - 1, y, 1, h), _points(img, x + w, y, 1, h)]
+    xs, ys, cs = (np.concatenate(p) for p in zip(*parts))
+    return lin_points(xs, ys, cs)
+
+
 def lin_edge(img, x, y, w, h):
     """The whole top row and left column of an area."""
     parts = [_points(img, x, y, w, 1), _points(img, x, y + 1, 1, h - 1)]

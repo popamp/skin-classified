@@ -1,19 +1,19 @@
 """The equalizer: window, buttons, slider bars and the shade strip."""
 from art_main import lamp_button, socket
 from art_sliders import groove
-from art_title import gold_lines, strip_frame
+from art_title import gold_lines, strip_frame, title
 
 CYAN = "#00c6ff"
 GROOVES = [25] + [82 + 18 * i for i in range(10)]  # preamp and the ten bands, 7 wide, rows 39..98
 
 
-def eq_strip(s, y, h=14):
-    """The EQUALIZER title strip (its lettering kept as exact pixels)."""
+def eq_strip(s, y, h=14, active=True):
+    """The EQUALIZER title strip."""
     gold = [(5, 97), (174, 79)]
     strip_frame(s, y, [(102, 3, 72, 9), (254, 3, 19, 9)] + [(gx, 5, gl, 5) for gx, gl in gold], h, 0)
     for gx, gl in gold:
         gold_lines(s, gx, y + 5, gl)
-    s.pix(102, y + 3, 72, 9, f"col:{103}", 14)
+    title(s, "EQUALIZER", 107, 169, y, active)
     s.pix(254, y + 3, 19, 9, "all")  # shade, close
 
 
@@ -59,7 +59,7 @@ def eqmain(s):
         lamp_button(s, f, i >= 4)
     s.pix(0, 116, 275, 18, CYAN, 0, frames)
     eq_strip(s, 134, 15)
-    eq_strip(s, 149, 15)
+    eq_strip(s, 149, 15, active=False)
     with s.group("bar"):
         slider_bar(s, 13, 164)
     for row_y in (164, 229):

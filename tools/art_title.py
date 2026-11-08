@@ -1,38 +1,24 @@
-"""Title bars: metal strips with gold lines and the name POPAMP where the reference had its own name."""
+"""Title bars: metal strips with gold lines and the window's name as vector lettering."""
+from lettering import title_path
 
 CYAN = "#00c6ff"  # unused parts of a reference sheet
 X0 = 27  # left edge of the strips in the titlebar sheet
 W = 275
-
-# Letters for POPAMP, taken from the reference's title lettering (rows 4..10 of a strip):
-# (sheet, x of the first column, width) for the active strip; the inactive one is `INACTIVE_DY` lower.
-GLYPHS = {
-    "P": ("titlebar", 180, 7),
-    "A": ("titlebar", 165, 6),
-    "M": ("titlebar", 171, 9),
-    "O": ("eqmain", 114, 7),  # the Q of EQUALIZER without its tail
-}
-GLYPH_BG = {"titlebar": 141, "eqmain": 104}  # a column of plain background beside the lettering
-INACTIVE_Y = {"titlebar": 15, "eqmain": 149}
-NAME = "POPAMP"
-KERN = {"PO": -1, "PA": -2}  # the P has a spare column; the A slopes away and its leg goes under the P's bowl
+NAME_W = 42  # ink width of POPAMP
+TITLE_COLOR = {True: "#ffffff", False: "#a8a8ad"}  # focused window, unfocused window
+TITLE_SHADOW = ' transform="translate(0.6 0.8)" opacity="0.45"'
 
 
-def advances():
-    """How far each letter of the name moves the pen."""
-    return [GLYPHS[c][2] + KERN.get(NAME[i:i + 2], 0) for i, c in enumerate(NAME)]
+def title(s, text, left, right, y, active=True):
+    """`text` with its ink from `left` to `right`, on rows 4..10 of the strip at `y`, over a soft shadow."""
+    d = title_path(text, left, right, y + 11)
+    s.path(d, "#000000", TITLE_SHADOW)
+    s.path(d, TITLE_COLOR[active])
 
 
 def name(s, cx, y, active=True):
-    """POPAMP centred on `cx`, its letters' rows 4..10 drawn from `y + 4`."""
-    x = round(cx - sum(advances()) / 2)
-    for c, advance in zip(NAME, advances()):
-        sheet, gx, gw = GLYPHS[c]
-        gy = 0 if active else INACTIVE_Y[sheet]
-        with s.source(ref=sheet, dx=gx - x, dy=gy - y, absolute=True):
-            rects = s.pix_mask(x, y + 4, gw, 7, f"col:{GLYPH_BG[sheet] - (gx - x)}", 14)
-        s.add_pixels(rects)
-        x += advance
+    """POPAMP centred on `cx`."""
+    title(s, "POPAMP", cx - NAME_W / 2, cx + NAME_W / 2, y, active)
 
 
 def gold_lines(s, x, y, length):
