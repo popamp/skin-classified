@@ -5,8 +5,8 @@ Grey brushed metal, cream buttons, green lamps and gold rules: the classic 2004 
 ![Popamp Classified: main window, equalizer and playlist](preview.png)
 
 A vector skin for [Popamp](https://github.com/popamp/popamp), skin format
-version 1. Original design by Steve Gedikian, classic version by John
-Slegers and PeterPan, edited by Wildrose-Wally.
+version 1. It is only a port of an existing design; see
+[Credits](#credits).
 
 ## Install
 
@@ -43,10 +43,25 @@ Change the scripts, not the generated files.
   rectangles, so they stay as crisp as the original at x1 and sharp when
   scaled.
 
+## Credits
+
+This skin is a vector port of "Classified" (released July 4, 2004). The
+design is not ours:
+
+> Original Design by Steve Gedikian.
+> Classic Version by John Slegers and PeterPan.
+> Edited by Wildrose-Wally.
+>
+> Copyright © 2004-2007 Steve Gedikian, John Slegers, PeterPan &
+> Wildrose-Wally. All rights reserved.
+
+We could not find a way to contact the authors. If you are one of them
+and want this port changed or removed, please open an issue.
+
 ## License
 
 The scripts in `tools/` (`*.py`) are licensed under either of
 [Apache License 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your
-option. The artwork (`sheets/`, `tools/fits.json`, `preview.png`) follows
-the design of the original skin, whose authors reserve its rights, so
-these licenses do not cover it.
+option. These licenses do not cover the artwork (`sheets/`,
+`tools/fits.json`, `preview.png`): its design belongs to the authors
+named above.

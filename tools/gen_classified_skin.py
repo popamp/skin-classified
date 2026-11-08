@@ -46,7 +46,7 @@ META = """\
 
 [meta]
 name = "Popamp Classified"
-author = "Popamp"
+author = "Steve Gedikian, John Slegers, PeterPan, Wildrose-Wally (vector port by Popamp)"
 format_version = 1
 """
 
