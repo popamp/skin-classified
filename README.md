@@ -1,5 +1,12 @@
 # Popamp Classified
 
+# ⚠️ This skin was generated automatically
+
+## It needs a designer's edits to make it simpler
+
+The pictures were written by a program, not drawn by a designer, so the
+files are more complicated than the skin needs. Fork it and redraw it.
+
 Grey brushed metal, cream buttons, green lamps and gold rules: the classic 2004 skin "Classified" redrawn as vector sheets, with the original player's name and logo replaced by Popamp's.
 
 ![Popamp Classified: main window, equalizer and playlist](preview.png)
@@ -10,8 +17,14 @@ version 1. It is only a port of an existing design; see
 
 ## Install
 
-Clone it into Popamp's skins folder and pick it in the main menu's skin
-list:
+With Popamp 0.6.0 or newer from [apt.popamp.app](https://apt.popamp.app):
+
+```sh
+sudo apt install popamp-skin-classified
+```
+
+Then pick it in the main menu's skin list. Or clone it into Popamp's
+skins folder, where a copy of the same name wins over the package:
 
 ```sh
 git clone https://github.com/popamp/skin-classified ~/.local/share/popamp/skins/classified
@@ -37,14 +50,14 @@ Change the scripts, not the generated files.
 
 ## How it is drawn
 
-- Metal surfaces: one horizontal gradient per row (brushed look, smooth at
-  any size); bevels: 1-pixel rings with fitted gradients.
-- Slots of the sliders, the display's cut-out, Popamp's bolt: vector shapes.
-- Window titles: letters of Roboto Bold converted to outlines, so they
+- Every window is a handful of whole shapes: a metal panel or title strip
+  is one rectangle under one gradient, bevels are single rings and lines.
+- Buttons, lamps, icons, slots, the display's cut-out and Popamp's bolt are
+  vector shapes in their own right.
+- Titles and labels are letters of Roboto converted to outlines, so they
   scale with the window and no font is needed to show them.
-- Pixel fonts, small icons, labels and scale marks: exact pixels as
-  rectangles, so they stay as crisp as the original at x1 and sharp when
-  scaled.
+- Only the bitmap fonts of the display (`text`, `numbers`, `nums_ex`,
+  `monoster`, `playpaus`) stay exact, each colour as one outlined shape.
 
 ## Credits
 

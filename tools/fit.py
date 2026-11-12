@@ -94,13 +94,6 @@ def lin_ring(img, x, y, w, h, top_left):
     return lin_points(xs, ys, cs)
 
 
-def lin_frame(img, x, y, w, h):
-    """A gradient across an area, fitted to the 1-pixel frame just outside it."""
-    parts = [_points(img, x, y - 1, w, 1), _points(img, x, y + h, w, 1), _points(img, x - 1, y, 1, h), _points(img, x + w, y, 1, h)]
-    xs, ys, cs = (np.concatenate(p) for p in zip(*parts))
-    return lin_points(xs, ys, cs)
-
-
 def lin_edge(img, x, y, w, h):
     """The whole top row and left column of an area."""
     parts = [_points(img, x, y, w, 1), _points(img, x, y + 1, 1, h - 1)]
@@ -133,73 +126,82 @@ def profile(img, x, y, w, h, axis, n, skip=()):
     return {"lin": [float(v) for v in vec], "stops": stops}
 
 
-def _mask(x, y, w, h, skip):
-    """True where the area is not inside one of the `skip` rectangles."""
-    use = np.ones((h, w), bool)
-    for sx, sy, sw, sh in skip:
-        use[max(0, sy - y) : max(0, sy + sh - y), max(0, sx - x) : max(0, sx + sw - x)] = False
-    return use
+JUMP = 10  # a colour step this big between neighbouring rows is a hard edge, not shading
+BEND = 3  # how far shading may stray from a straight ramp before it gets another stop
 
 
-def _background(img, x, y, w, h, bg, use):
-    """The colour each pixel is compared with (see `pixels`), or None when there is too little to fit."""
-    if bg == "lin":
-        xs, ys, cs = _points(img, x, y, w, h)
-        u = use.ravel()
-        if u.sum() < 3:
-            return None
-        a = np.column_stack([np.ones_like(xs), xs, ys])
-        _, keep = _model(xs[u], ys[u], cs[u])
-        coef, *_ = np.linalg.lstsq(a[u][keep], cs[u][keep], rcond=None)
-        return (a @ coef).reshape(h, w, 3)
-    if bg.startswith("col:"):
-        return img[y : y + h, int(bg[4:])][:, None, :]
-    if bg == "all":
-        return np.full(3, -1000)
-    return np.array([int(bg[i : i + 2], 16) for i in (1, 3, 5)])
-
-
-def _row_runs(area, keep, j):
-    """Runs of one colour in row `j` of the kept pixels: (first column, length, colour)."""
-    row, i, w = [], 0, keep.shape[1]
-    while i < w:
-        if not keep[j, i]:
-            i += 1
-            continue
-        c, k = tuple(area[j, i]), i
-        while k < w and keep[j, k] and tuple(area[j, k]) == c:
-            k += 1
-        row.append((i, k - i, hexc(c)))
-        i = k
-    return row
-
-
-def _rectangles(area, keep, x, y):
-    """Kept pixels as rectangles [x, y, w, h, colour]: runs along rows, stacked where rows repeat them."""
-    runs, open_runs = [], {}
-    for j in range(keep.shape[0]):
-        still = {}
-        for i, rw, c in _row_runs(area, keep, j):
-            prev = open_runs.get((i, rw, c))
-            if prev is None:
-                prev = [x + i, y + j, rw, 0, c]
-                runs.append(prev)
-            prev[3] += 1
-            still[(i, rw, c)] = prev
-        open_runs = still
-    return runs
-
-
-def pixels(img, x, y, w, h, bg, tol, skip=()):
-    """Pixels differing from `bg` by more than `tol`, merged into same-coloured rectangles.
-
-    `bg` is a colour, "lin" (a gradient fitted to the area), "col:X" (column X, row by row) or
-    "all"; pixels in the `skip` rectangles are left out.
-    """
-    use = _mask(x, y, w, h, skip)
-    ref = _background(img, x, y, w, h, bg, use)
-    if ref is None:
+def _ramp(colours, first, last):
+    """The rows of `first`..`last` that a smooth gradient needs as stops (keeping the ends)."""
+    if last - first < 2:
         return []
+    span = colours[last] - colours[first]
+    offs = [np.abs(colours[k] - colours[first] - span * (k - first) / (last - first)).max() for k in range(first + 1, last)]
+    worst = int(np.argmax(offs))
+    if offs[worst] <= BEND:
+        return []
+    k = first + 1 + worst
+    return _ramp(colours, first, k) + [k] + _ramp(colours, k, last)
+
+
+def bands(img, x, y, w, h, axis):
+    """Stops of one gradient along `axis`: hard edges where the colour jumps, ramps where it shades."""
+    area = img[y : y + h, x : x + w]
+    colours = np.median(area, 1 if axis == "y" else 0)
+    n = len(colours)
+    edges = [0] + [i for i in range(1, n) if np.abs(colours[i] - colours[i - 1]).max() >= JUMP] + [n]
+    stops = []
+    for a, b in zip(edges, edges[1:]):
+        stops.append([a / n, hexc(colours[a])])
+        stops += [[(k + 0.5) / n, hexc(colours[k])] for k in _ramp(colours, a, b - 1)]
+        stops.append([b / n, hexc(colours[b - 1])])
+    return stops
+
+
+def _contours(mask):
+    """Directed unit edges round the True cells, chained into closed loops of (x, y) corners."""
+    h, w = mask.shape
+    grown = np.zeros((h + 2, w + 2), bool)
+    grown[1:-1, 1:-1] = mask
+    nexts = {}
+    for j, i in zip(*np.nonzero(mask)):
+        a, b = j + 1, i + 1
+        for present, p, q in (
+            (grown[a - 1, b], (i, j), (i + 1, j)),
+            (grown[a, b + 1], (i + 1, j), (i + 1, j + 1)),
+            (grown[a + 1, b], (i + 1, j + 1), (i, j + 1)),
+            (grown[a, b - 1], (i, j + 1), (i, j)),
+        ):
+            if not present:
+                nexts.setdefault(p, []).append(q)
+    loops = []
+    while nexts:
+        start = min(nexts)
+        loop, at = [start], nexts[start].pop()
+        if not nexts[start]:
+            del nexts[start]
+        while at != start:
+            loop.append(at)
+            following = nexts[at].pop()
+            if not nexts[at]:
+                del nexts[at]
+            at = following
+        loops.append(loop)
+    return loops
+
+
+def _corners(loop):
+    """A closed loop of unit steps with only its corners kept."""
+    n = len(loop)
+    return [p for i, p in enumerate(loop) if (p[0] == loop[i - 1][0]) != (p[0] == loop[(i + 1) % n][0])]
+
+
+def outlines(img, x, y, w, h, bg):
+    """Each colour of a flat pixel-art area, except `bg`, as one outline path: [[colour, path data]...]."""
     area = img[y : y + h, x : x + w].astype(int)
-    keep = (np.abs(area - ref).max(2) > tol) & use
-    return _rectangles(area, keep, x, y)
+    skip = tuple(int(bg[i : i + 2], 16) for i in (1, 3, 5))
+    out = []
+    for colour in sorted({tuple(c) for c in area.reshape(-1, 3).tolist()} - {skip}):
+        loops = _contours((area == colour).all(2))
+        d = "".join("M" + "L".join(f"{px + x} {py + y}" for px, py in _corners(loop)) + "Z" for loop in loops)
+        out.append([hexc(colour), d])
+    return out

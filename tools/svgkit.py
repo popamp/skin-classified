@@ -119,21 +119,25 @@ class Sheet:
         flat = tuple(v for r in skip for v in r)
         return self._fit("prof", (x, y, w, h, axis, n, *flat), lambda img: _fit().profile(img, x, y, w, h, axis, n, skip))
 
-    def rows(self, x, y, w, h, n, skip=(), sample=None):
-        """A surface as one horizontal gradient per row; `sample` maps a row to the row(s) measured instead."""
-        for j in range(y, y + h):
-            sy, sh = sample(j) if sample else (j, 1)
-            # each row reaches half a pixel under the next one: no seams at fractional sizes
-            self.rect(x, j, w, 1.5 if j < y + h - 1 else 1, self.prof(x, sy, w, sh, "x", n, skip))
+    def _bands(self, sx, sy, sw, sh, axis):
+        return self._fit("bands", (sx, sy, sw, sh, axis), lambda img: _fit().bands(img, sx, sy, sw, sh, axis))
 
-    def cols(self, x, y, w, h):
-        """Exact columns: each one a vertical gradient through its pixels."""
-        for i in range(x, x + w):
-            self.rect(i, y, 1.5 if i < x + w - 1 else 1, h, self.prof(i, y, 1, h, "y", h))
+    def vfill(self, x, y, w, h, sx, sw=1, sy=None):
+        """One rectangle under one vertical gradient: the colours of `h` rows measured on columns `sx`..`sx + sw`."""
+        self.rect(x, y, w, h, self.vgrad(y, h, sx, sw, sy))
 
-    def frame(self, x, y, w, h):
-        """A gradient across an area, from the 1-pixel frame round it (to paint over what was in it)."""
-        return self._fit("frame", (x, y, w, h), lambda img: _fit().lin_frame(img, x, y, w, h))
+    def vgrad(self, y, h, sx, sw=1, sy=None):
+        """A vertical gradient over rows `y`..`y + h`: the colours measured on columns `sx`..`sx + sw`."""
+        return {"lin": [0, y, 0, y + h], "stops": self._bands(sx, y if sy is None else sy, sw, h, "y")}
+
+    def hfill(self, x, y, w, h, sy, sh=1, sx=None):
+        """One rectangle under one horizontal gradient: the colours of `w` columns measured on rows `sy`..`sy + sh`."""
+        stops = self._bands(x if sx is None else sx, sy, w, sh, "x")
+        self.rect(x, y, w, h, {"lin": [x, 0, x + w, 0], "stops": stops})
+
+    def line(self, x, y, h):
+        """A one-pixel vertical bevel line."""
+        self.rect(x, y, 1, h, self.lin(x, y, 1, h, "y"))
 
     def color(self, x, y, w=1, h=1):
         return self._fit("color", (x, y, w, h), lambda img: _fit().mean(img, x, y, w, h))
@@ -180,41 +184,10 @@ class Sheet:
         self.rect(x, y, w, h, self._fit("edge", (x, y, w, h), lambda img: _fit().lin_edge(img, x, y, w, h)))
         return x + 1, y + 1, w - 1, h - 1
 
-    def bevel(self, x, y, w, h, n, face="lin"):
-        """`n` nested rings and a fitted face inside them; returns the face rectangle."""
-        for _ in range(n):
-            x, y, w, h = self.ring(x, y, w, h)
-        if face == "lin":
-            self.rect(x, y, w, h, self.lin(x, y, w, h))
-        return x, y, w, h
-
-    def pix(self, x, y, w, h, bg, tol=24, skip=()):
-        """Pixel art: the area's pixels that differ from `bg` by more than `tol`, as exact rectangles.
-
-        `bg` is a colour, "lin" (a gradient fitted to the area), "col:X" (column X, row by row)
-        or "all"; pixels inside the `skip` rectangles are left out.
-        """
-        self.add_pixels(self.pix_mask(x, y, w, h, bg, tol, skip))
-
-    def pix_mask(self, x, y, w, h, bg, tol=24, skip=()):
-        """The pixel art of `pix` without drawing it (for moving or recolouring)."""
-        flat = tuple(v for r in skip for v in r)
-        return self._fit("pix", (x, y, w, h, bg, tol, *flat), lambda img: _fit().pixels(img, x, y, w, h, bg, tol, skip))
-
-    def pix_tiles(self, x, y, w, h, tile, tol, skip=()):
-        """`pix` against a gradient fitted tile by tile: markings on a surface that is only locally even."""
-        for ty in range(y, y + h, tile):
-            for tx in range(x, x + w, tile):
-                tw, th = min(tile, x + w - tx), min(tile, y + h - ty)
-                inside = [r for r in skip if r[0] < tx + tw and r[0] + r[2] > tx and r[1] < ty + th and r[1] + r[3] > ty]
-                self.pix(tx, ty, tw, th, "lin", tol, inside)
-
-    def add_pixels(self, rects, dx=0, dy=0, color=None):
-        by_color = {}
-        for rx, ry, rw, rh, c in rects:
-            by_color.setdefault(color or c, []).append(f"M{rx + dx} {ry + dy}h{rw}v{rh}h{-rw}z")
-        for c, parts in by_color.items():
-            self.add(f'<path d="{"".join(parts)}" fill="{c}"/>')
+    def outlined(self, x, y, w, h, bg):
+        """Flat-coloured pixel art (the original's bitmap fonts) as one outlined shape per colour; `bg` is left out."""
+        for colour, d in self._fit("outlines", (x, y, w, h, bg), lambda img: _fit().outlines(img, x, y, w, h, bg)):
+            self.path(d, colour)
 
     def save(self, path):
         text = (

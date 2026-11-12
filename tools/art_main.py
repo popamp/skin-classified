@@ -1,93 +1,85 @@
-"""Sheets of the main window: transport buttons."""
+"""The main window and its button sheets."""
+from art_parts import (BLACK, LOOP, PRESS_SHIFT, RAISED_INK, PRESSED_INK, TRANSPORT, cream_button, cream_button_down, lamp, lamp_button, label,
+                       resize_grip, socket, span_label, transport_icon, transport_inks, window_frame)
+from art_sliders import MAIN_PANEL, groove, panel_fit
+from art_title import main_strip
 
-BLACK = "#000000"
 # The bolt of Popamp's logo, as an outline around its centre (118.8 units high)
 BOLT = ((-10.43, -59.4), (23.46, -59.4), (0, -19.92), (30.91, -19.92), (-19.74, 59.4), (-3.72, 3.54), (-30.91, 3.54))
 LOGO_CX, LOGO_CY = 253.5, 94
-LOGO_AREA = (241, 82, 26, 25)  # where the reference's logo was: plain metal now
-
-
-def cream_face(s, x, y, w, h, icon_tol=10):
-    """A cream face: a fitted gradient with the engraved icon on it as exact pixels."""
-    s.rect(x, y, w, h, s.lin(x, y, w, h))
-    s.pix(x, y, w, h, "lin", icon_tol)
-
-
-def cream_button(s, x, y, w, h):
-    """A raised cream button: an outer top-left edge, two bevel rings and a sunken face."""
-    r = s.edge(x, y, w, h)
-    r = s.ring(*r)
-    r = s.ring(*r)
-    cream_face(s, *r)
-
-
-def cream_button_down(s, x, y, w, h, top=1):
-    """The pressed button: black top-left (`top` rows), two dark rings and a darker face."""
-    s.rect(x, y, w, h, BLACK)
-    r = s.ring(x + 1, y + top, w - 1, h - top)
-    r = s.ring(*r)
-    cream_face(s, *r)
+DISPLAY = "M11 21H265V53H107A7 7 0 0 0 100 60V67H11Z"
+TAB_EDGE = "M265 53.5H107A6.5 6.5 0 0 0 100.5 60V67"
+BARS_MIXED = ((7, 5, 2, 3), (10, 3, 2, 5), (13, 6, 2, 2), (16, 4, 2, 4))
+BARS_RISING = ((8, 6, 2, 2), (11, 5, 2, 3), (14, 4, 2, 4), (17, 3, 2, 5))
+ICON_LABEL = {"eq": ("EQ", 9.5, 18), "pl": ("PL", 10, 17.5)}
+WORD_CAP = 5.5
 
 
 def cbuttons(s):
-    for i in range(4):  # previous, play, pause, stop: 22 wide and a black column
+    inks_up, inks_down = transport_inks(s, 69, 0), transport_inks(s, 69, 18, PRESS_SHIFT)
+    for i, name in enumerate(TRANSPORT):
+        if name == "eject":
+            continue
         x = 23 * i
-        s.rect(x + 22, 0, 1, 18, BLACK)
+        s.rect(x + 22, 0, 1, 36, BLACK)
         cream_button(s, x, 0, 22, 18)
-        s.rect(x + 22, 18, 1, 18, s.color(x + 22, 20, 1, 10))
+        transport_icon(s, name, x, 0, inks_up)
         cream_button_down(s, x, 18, 22, 18)
-    cream_button(s, 92, 0, 22, 18)
-    cream_button_down(s, 92, 18, 22, 18)
-    cream_button(s, 114, 0, 22, 16)  # eject
-    s.rect(135, 16, 1, 16, s.color(135, 16, 1, 16))
+        transport_icon(s, name, x, 18, inks_down, PRESS_SHIFT)
+    cream_button(s, 114, 0, 22, 16)
+    transport_icon(s, "eject", 114, 0, inks_up)
     cream_button_down(s, 114, 16, 21, 16, top=2)
+    transport_icon(s, "eject", 114, 16, inks_down, PRESS_SHIFT)
 
 
-def exact_around(s, outer, inner, bg="#00c6ff"):
-    """The exact pixels of `outer` outside `inner` (thin margins next to a drawn shape)."""
-    ox, oy, ow, oh = outer
-    ix, iy, iw, ih = inner
-    for x, y, w, h in ((ox, oy, ow, iy - oy), (ox, iy + ih, ow, oy + oh - iy - ih), (ox, iy, ix - ox, ih), (ix + iw, iy, ox + ow - ix - iw, ih)):
-        if w > 0 and h > 0:
-            s.pix(x, y, w, h, bg, 0)
+def bars(s, frame, table, pressed):
+    fx, fy = frame[:2]
+    d = "".join(f"M{fx + x} {fy + y}h{w}v{h}h{-w}z" for x, y, w, h in table)
+    s.path(d, PRESSED_INK if pressed else RAISED_INK)
 
 
-def lamp_button(s, frame, pressed):
-    """A cream toggle in a black frame: one cream bevel (two darker ones when pressed) and a face with lamp and label."""
-    r = s.ring(*frame)
-    r = s.ring(*r)
-    if pressed:
-        r = s.ring(*r)
-    cream_face(s, *r)
+def bars_button(s, frame, table, pressed, lamp_dx):
+    lamp_button(s, frame, pressed)
+    lamp(s, frame[0] + lamp_dx, frame[1] + 3, 2)
+    bars(s, frame, table, pressed)
 
 
-def lamp_sprite(s, sprite, frames, pressed):
-    """`pressed`: one flag per frame (the reference mixes pressed and raised halves in one sprite)."""
-    if isinstance(pressed, bool):
-        pressed = [pressed] * len(frames)
-    for f, p in zip(frames, pressed):
-        lamp_button(s, f, p)
-    if len(frames) == 1:
-        exact_around(s, sprite, frames[0])
-    else:  # two buttons side by side: margins around their common box, the gap between them
-        a, b = frames
-        box = (a[0], min(a[1], b[1]), b[0] + b[2] - a[0], max(a[3], b[3]))
-        exact_around(s, sprite, box)
-        s.pix(a[0] + a[2], box[1], b[0] - a[0] - a[2], box[3], "#00c6ff", 0)
+def loop_button(s, frame, pressed):
+    lamp_button(s, frame, pressed)
+    lamp(s, frame[0] + 3, frame[1] + 3, 2)
+    s.stroke(LOOP, PRESSED_INK if pressed else RAISED_INK, 1, f' transform="translate({frame[0] - 3} {frame[1] - 2})"')
+
+
+def word_button(s, frame, which, pressed):
+    """The EQ or PL toggle: lamp and two letters."""
+    lamp_button(s, frame, pressed)
+    lamp(s, frame[0] + 3, frame[1] + 3, 3)
+    text, left, right = ICON_LABEL[which]
+    span_label(s, text, frame[0] + left, frame[0] + right, frame[1] + 8, WORD_CAP, PRESSED_INK if pressed else RAISED_INK)
+
+
+def backing(s, x, y, w, h, rows=()):
+    """The metal round a sprite's frames: one gradient across it (the walls), and the `rows` (y, height) over it."""
+    s.hfill(x, y, w, h, y + h - 4)  # a row below the lamps
+    for ry, rh in rows:
+        s.vfill(x, y + ry, w, rh, x + w // 2, 2)
 
 
 def shufrep(s):
     shuffle_pressed = [(False, False), (True, False), (False, False), (False, True)]
     for i in range(4):
         y = 15 * i
-        lamp_sprite(s, (0, y, 28, 15), [(3, y + 2, 23, 11)], i % 2 == 1)
-        lamp_sprite(s, (28, y, 47, 15), [(28, y + 2, 21, 11), (52, y + 2, 22, 11)], shuffle_pressed[i])
-    s.pix(0, 60, 92, 1, "#00c6ff", 0)
+        pressed = i % 2 == 1
+        backing(s, 0, y, 75, 15, ((0, 1), (13, 2)))
+        loop_button(s, (3, y + 2, 23, 11), pressed)
+        bars_button(s, (28, y + 2, 21, 11), BARS_MIXED, shuffle_pressed[i][0], 2)
+        bars_button(s, (52, y + 2, 22, 11), BARS_RISING, shuffle_pressed[i][1], 3)
     for y in (61, 73):
-        lamp_sprite(s, (0, y, 23, 12), [(0, y, 22, 11)], False)
-        lamp_sprite(s, (23, y, 23, 12), [(25, y, 21, 11)], False)
-        lamp_sprite(s, (46, y, 23, 12), [(46, y, 22, 11)], False)
-        lamp_sprite(s, (69, y, 23, 12), [(71, y, 21, 11)], y == 73)
+        backing(s, 0, y, 92, 12, ((11, 1),))
+        word_button(s, (0, y, 22, 11), "eq", False)
+        word_button(s, (25, y, 21, 11), "pl", False)
+        word_button(s, (46, y, 22, 11), "eq", False)
+        word_button(s, (71, y, 21, 11), "pl", y == 73)
 
 
 def popamp_bolt(s, cx, cy, height):
@@ -105,63 +97,64 @@ def popamp_bolt(s, cx, cy, height):
     s.add(f'<polygon points="{outline}" fill="url(#boltfill)"/>')
     # the shadow the upper edges cast on the sunken face: everything but the bolt moved down and right, clipped to the bolt
     s.defs.append(f'<clipPath id="boltclip"><polygon points="{outline}"/></clipPath>')
-    x, y, w, h = LOGO_AREA
+    x0, y0, w, h = 241, 82, 26, 25
     moved = "L".join(f"{cx + px * k + 1.1:.2f} {cy + py * k + 1.1:.2f}" for px, py in BOLT)
-    s.add(f'<path d="M{x} {y}h{w}v{h}h{-w}ZM{moved}Z" fill="#000000" fill-rule="evenodd" opacity="0.55" clip-path="url(#boltclip)"/>')
+    s.add(f'<path d="M{x0} {y0}h{w}v{h}h{-w}ZM{moved}Z" fill="#000000" fill-rule="evenodd" opacity="0.55" clip-path="url(#boltclip)"/>')
 
 
-def socket(s, frame):
-    """The sunken rim round a framed button."""
-    x, y, w, h = frame
-    s.ring(x - 1, y - 1, w + 2, h + 2)
+def display(s):
+    """The song display: one cut-out with a dark rim top-left, a light one bottom-right and a raised tab in its corner."""
+    s.rect(10, 20, 256, 1, s.color(150, 20))
+    s.rect(10, 21, 1, 47, s.color(10, 40))
+    s.rect(265, 21, 1, 32, s.color(265, 30))
+    s.rect(11, 67, 89, 1, s.color(50, 67))
+    s.path(DISPLAY, BLACK)
+    s.stroke(TAB_EDGE, s.color(180, 53), 1)
+    s.rect(72, 30, 3, 1, "#ffffff")  # the clock's colon
+    s.rect(72, 33, 3, 1, "#ffffff")
+    span_label(s, "KBPS", 126.5, 146, 49, 6, "#ffffff")
+    span_label(s, "KHZ", 167, 182, 49, 6, "#ffffff")
 
 
-DISPLAY = "M11 21H265V53H107A7 7 0 0 0 100 60V67H11Z"
-TAB_EDGE = "M265 53.5H107A6.5 6.5 0 0 0 100.5 60V67"
+def position_slot(s):
+    """The position bar's slot in the bare window (the sliding bar is drawn over it from its own sheet)."""
+    from art_sliders import slot
+
+    s.rect(15, 73, 1, 8, s.color(15, 75))
+    with s.source(ref="posbar", dx=-16, dy=-72):
+        slot(s, 16, 72)
+
+
+def transport(s):
+    for f in [(15, 87, 116, 20), (135, 88, 23, 18)]:
+        socket(s, f)
+        s.rect(*f, BLACK)
+    with s.source(ref="cbuttons", dx=-16, dy=-88):
+        inks = transport_inks(s, 16 + 69, 88)
+        for i, name in enumerate(n for n in TRANSPORT if n != "eject"):
+            cream_button(s, 16 + 23 * i, 88, 22, 18)
+            transport_icon(s, name, 16 + 23 * i, 88, inks)
+    with s.source(ref="cbuttons", dx=114 - 136, dy=-89):
+        cream_button(s, 136, 89, 22, 16)
+    with s.source(ref="cbuttons", dx=-16, dy=-88):
+        transport_icon(s, "eject", 136, 89, inks)
 
 
 def main(s):
-    import art_title
-
-    art_title.main_strip(s, 0, True, x0=0)
-    skip = [(10, 20, 256, 34), (10, 53, 92, 15), (14, 86, 118, 22), (134, 87, 25, 20), (161, 89, 79, 15), (217, 56, 49, 15), (106, 59, 67, 10), (12, 72, 6, 10), (259, 72, 8, 10)] + [LOGO_AREA]
-    s.cols(0, 14, 7, 102)
-    s.rows(7, 14, 261, 102, 16, skip)
-    s.cols(268, 14, 7, 102)
-    s.pix(12, 72, 6, 10, "all")  # ends of the position bar's slot
-    s.pix(259, 72, 8, 10, "all")
-    # song display: dark rim top-left, light bottom-right, a raised tab cut into its lower right
-    s.rect(10, 20, 256, 1, s.color(150, 20))  # dark top
-    s.rect(10, 21, 1, 47, s.color(10, 40))  # dark left
-    s.rect(265, 21, 1, 32, s.color(265, 30))  # light right, down to the tab
-    s.rect(11, 67, 89, 1, s.color(50, 67))  # light bottom, left of the tab
-    s.path(DISPLAY, "#000000")
-    s.stroke(TAB_EDGE, s.color(180, 53), 1)
-    s.pix(11, 21, 254, 32, "#000000", 40)  # colon, KBPS, KHZ
-    from art_sliders import groove
-
+    window_frame(s, 17)
+    s.rect(*MAIN_PANEL, panel_fit(s))
+    main_strip(s, 0, True, x0=0)
+    display(s)
     groove(s, 107, 60, 64, 7)
-    for f in [(219, 58, 22, 11), (244, 58, 21, 11), (163, 91, 23, 11), (189, 91, 23, 11), (215, 91, 23, 11)]:
-        socket(s, f)
-        lamp_button(s, f, False)
-    # transport buttons and eject, as on their own sheet
-    for f in [(15, 87, 116, 20), (135, 88, 23, 18)]:
-        socket(s, f)
-        s.rect(*f, "#000000")
-    with s.source(ref="cbuttons", dx=-16, dy=-88):
-        for i in range(4):
-            cream_button(s, 16 + 23 * i, 88, 22, 18)
-        cream_button(s, 108, 88, 22, 18)
-    with s.source(ref="cbuttons", dx=114 - 136, dy=-89):
-        cream_button(s, 136, 89, 22, 16)
-    s.rect(*LOGO_AREA, s.frame(*LOGO_AREA))
+    position_slot(s)
+    transport(s)
+    for frame, which in [((219, 58, 22, 11), "eq"), ((244, 58, 21, 11), "pl")]:
+        socket(s, frame)
+        word_button(s, frame, which, False)
+    for frame, table, dx in [((163, 91, 23, 11), BARS_MIXED, 3), ((189, 91, 23, 11), BARS_RISING, 3)]:
+        socket(s, frame)
+        bars_button(s, frame, table, False, dx)
+    socket(s, (215, 91, 23, 11))
+    loop_button(s, (215, 91, 23, 11), False)
     popamp_bolt(s, LOGO_CX, LOGO_CY, 22)
     resize_grip(s)
-
-
-def resize_grip(s):
-    """Two light diagonal grooves with dark shadows in the bottom-right corner."""
-    light, dark = s.color(266, 100), s.color(266, 101)
-    for x0, y0, x1, y1 in [(267, 99.5, 258.5, 108), (267, 103.5, 262.5, 108)]:
-        s.stroke(f"M{x0 + 1} {y0}L{x1 + 1} {y1}", dark)
-        s.stroke(f"M{x0} {y0}L{x1} {y1}", light)

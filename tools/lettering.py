@@ -1,44 +1,65 @@
-"""Window titles as outlines of Roboto Bold: they scale with the window and need no font at run time."""
+"""Lettering as outlines of Roboto: it scales with the window and needs no font at run time."""
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
-FONT = TTFont("/usr/share/fonts/truetype/roboto/unhinted/RobotoTTF/Roboto-Bold.ttf")
-GLYPHS = FONT.getGlyphSet()
-CMAP = FONT.getBestCmap()
-SCALE = 7 / FONT["OS/2"].sCapHeight  # capitals fill 7 whole rows of the strip, as in the classic lettering
-KERN = {"PA": -1.0, "AY": -0.7, "YL": -0.3}  # pixels; the pairs whose shapes leave a hole at even spacing
+ROBOTO = "/usr/share/fonts/truetype/roboto/unhinted/RobotoTTF/Roboto-%s.ttf"
+FONTS = {weight: TTFont(ROBOTO % weight) for weight in ("Bold", "Regular")}
+KERN = {"PA": -1.0, "AY": -0.7, "YL": -0.3}  # pixels at title size; pairs whose shapes leave a hole at even spacing
 
 
 def ntos(v):
     return f"{v:.2f}".rstrip("0").rstrip(".")
 
 
-def _ink(glyph):
-    pen = BoundsPen(GLYPHS)
-    GLYPHS[glyph].draw(pen)
-    return pen.bounds
+class Face:
+    """One weight of the font, at capitals `cap` pixels high."""
+
+    def __init__(self, weight, cap):
+        font = FONTS[weight]
+        self.glyphs, self.cmap = font.getGlyphSet(), font.getBestCmap()
+        self.scale = cap / font["OS/2"].sCapHeight
+
+    def ink(self, glyph):
+        pen = BoundsPen(self.glyphs)
+        self.glyphs[glyph].draw(pen)
+        return pen.bounds
+
+    def names(self, text):
+        return [self.cmap[ord(c)] for c in text]
+
+    def natural(self, text):
+        """The ink's extent from the first letter's left edge, at the font's own spacing."""
+        glyphs = self.names(text)
+        advances = sum(self.glyphs[g].width for g in glyphs[:-1]) * self.scale
+        return advances + (self.ink(glyphs[-1])[2] - self.ink(glyphs[0])[0]) * self.scale
+
+    def draw(self, text, placed, baseline):
+        path = SVGPathPen(self.glyphs, ntos=ntos)
+        for glyph, x in placed:
+            self.glyphs[glyph].draw(TransformPen(path, (self.scale, 0, 0, -self.scale, x, baseline)))
+        return path.getCommands()
 
 
-def _layout(text, left, right):
-    """The pen position of each letter so that the word's ink spans `left`..`right`, evenly tracked."""
-    glyphs = [CMAP[ord(c)] for c in text]
+def spanned(text, left, right, baseline, cap=7, weight="Bold"):
+    """Path data of `text` with its ink tracked evenly from `left` to `right`."""
+    face = Face(weight, cap)
+    glyphs = face.names(text)
     kerns = [KERN.get(text[i : i + 2], 0) for i in range(len(text) - 1)]
-    advances = [GLYPHS[g].width * SCALE for g in glyphs[:-1]]
-    first, last = _ink(glyphs[0])[0] * SCALE, _ink(glyphs[-1])[2] * SCALE
-    natural = sum(advances) + sum(kerns) + last - first
-    tracking = (right - left - natural) / (len(glyphs) - 1)
-    pen, placed = left - first, []
-    for glyph, advance, kern in zip(glyphs, advances + [0], kerns + [0]):
+    tracking = (right - left - face.natural(text) - sum(kerns)) / (len(glyphs) - 1)
+    pen, placed = left - face.ink(glyphs[0])[0] * face.scale, []
+    for glyph, kern in zip(glyphs, kerns + [0]):
         placed.append((glyph, pen))
-        pen += advance + kern + tracking
-    return placed
+        pen += face.glyphs[glyph].width * face.scale + kern + tracking
+    return face.draw(text, placed, baseline)
 
 
-def title_path(text, left, right, baseline):
-    """SVG path data of `text`, its ink from `left` to `right`, standing on `baseline`."""
-    path = SVGPathPen(GLYPHS, ntos=ntos)
-    for glyph, x in _layout(text, left, right):
-        GLYPHS[glyph].draw(TransformPen(path, (SCALE, 0, 0, -SCALE, x, baseline)))
-    return path.getCommands()
+def centred(text, cx, baseline, cap, weight="Regular"):
+    """Path data of `text` at the font's own spacing, its ink centred on `cx`."""
+    face = Face(weight, cap)
+    pen, placed = cx - face.natural(text) / 2 - face.ink(face.names(text)[0])[0] * face.scale, []
+    for glyph in face.names(text):
+        placed.append((glyph, pen))
+        pen += face.glyphs[glyph].width * face.scale
+    return face.draw(text, placed, baseline)

@@ -1,0 +1,15 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Popamp Classified
+Source: https://github.com/popamp/skin-classified
+Comment: A vector port of the skin "Classified" (released July 4, 2004).
+ Original Design by Steve Gedikian. Classic Version by John Slegers and
+ PeterPan. Edited by Wildrose-Wally. The window titles and labels are
+ outlines of Roboto, Copyright 2011 Google Inc., Apache License 2.0
+ (/usr/share/common-licenses/Apache-2.0).
+
+Files: *
+Copyright: 2004-2007 Steve Gedikian, John Slegers, PeterPan & Wildrose-Wally
+License: LicenseRef-Classified
+ All rights reserved. Popamp could not reach the authors to ask them;
+ if you are one of them and want this port changed or removed, open an
+ issue at https://github.com/popamp/skin-classified/issues.
