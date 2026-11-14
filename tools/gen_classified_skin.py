@@ -58,6 +58,7 @@ META = """\
 name = "Popamp Classified"
 author = "Steve Gedikian, John Slegers, PeterPan, Wildrose-Wally (vector port by Popamp)"
 format_version = 1
+min_popamp = "1.0.0"
 """
 
 

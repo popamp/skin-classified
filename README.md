@@ -9,7 +9,7 @@ files are more complicated than the skin needs. Fork it and redraw it.
 
 Grey brushed metal, cream buttons, green lamps and gold rules: the classic 2004 skin "Classified" redrawn as vector sheets, with the original player's name and logo replaced by Popamp's.
 
-![Popamp Classified: main window, equalizer and playlist](preview.png)
+![Popamp Classified: main window, equalizer and playlist in every colour set, and the bar below](preview.png)
 
 A vector skin for [Popamp](https://github.com/popamp/popamp), skin format
 version 1. It is only a port of an existing design; see
