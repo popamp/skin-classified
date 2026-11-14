@@ -8,10 +8,6 @@
 <linearGradient id="p6" gradientUnits="userSpaceOnUse" x1="123.37" y1="-81.23" x2="102.14" y2="-67.25"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
 </defs>
 <rect class="tone-541" x="0" y="0" width="227" height="22" fill="#818193"/>
-<rect class="tone-345" x="0" y="0" width="227" height="1" fill="#52525e"/>
-<rect class="tone-590" x="0" y="1" width="227" height="1" fill="#8d8da0"/>
-<rect class="tone-106" x="0" y="20" width="227" height="1" fill="#19191d"/>
-<rect class="tone-104" x="0" y="21" width="227" height="1" fill="#19191c"/>
 <rect class="tone-747" x="0" y="1" width="4" height="20" fill="#b2b2cb"/>
 <rect class="tone-265" x="0" y="1" width="4" height="1" fill="#3f3f48"/>
 <rect class="tone-663" x="3" y="2" width="1" height="19" fill="#9e9eb4"/>
@@ -30,4 +26,6 @@
 <rect x="213" y="90" width="24" height="13" fill="url(#p6)"/>
 <rect class="tone-276" x="213" y="90" width="23" height="12" fill="#42424b"/>
 </g>
+<rect class="tone-345" x="0" y="0" width="227" height="1" fill="#52525e"/>
+<rect class="tone-104" x="0" y="21" width="227" height="1" fill="#19191c"/>
 </svg>

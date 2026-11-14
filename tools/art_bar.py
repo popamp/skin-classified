@@ -54,11 +54,16 @@ def colours(s):
 
 
 def body(s, x, w):
-    """The metal across the bar: the window's two outer bevels top and bottom, the panel between."""
-    (tl0, br0, tl1, br1), panel, _ = colours(s)
+    """The panel's metal across the bar."""
+    _, panel, _ = colours(s)
     s.rect(x, 0, w, BAR_H, panel)
-    for y, c in ((0, tl0), (1, tl1), (BAR_H - 2, br1), (BAR_H - 1, br0)):
-        s.rect(x, y, w, 1, c)
+
+
+def edge(s, x, w):
+    """The bar's frame, the window's outer bevel top and bottom, over whatever reaches the edge, so it runs unbroken."""
+    (tl0, br0, _, _), _, _ = colours(s)
+    s.rect(x, 0, w, 1, tl0)
+    s.rect(x, BAR_H - 1, w, 1, br0)
 
 
 def display(s, x, w, left=False, right=False):
@@ -82,6 +87,7 @@ def left(s):
     dx, *rows = COLON
     for y in rows:
         s.rect(cx + dx, cy + y, 3, 1, "#ffffff")
+    edge(s, 0, BAR_LEFT)
 
 
 def mid(s):
@@ -89,6 +95,7 @@ def mid(s):
     display(s, 0, 8)
     with s.source(ref="posbar", absolute=True):
         s.rect(0, GROOVE_Y, 8, 2, s.prof(1, 3, 245, 4, "x", 8)["stops"][4][1])
+    edge(s, 0, 8)
 
 
 def right(s):
@@ -101,6 +108,7 @@ def right(s):
     with moved(s, *PLAY_MODES_AT):
         for frame, *_ in PLAY_MODES:
             play_mode_socket(s, frame)
+    edge(s, 0, BAR_RIGHT)
 
 # The title bar's buttons the bar has, and the middle of each glyph; both take the menu button's face (normal, pressed)
 BUTTONS = (("menu", 4), ("close", 3.5))

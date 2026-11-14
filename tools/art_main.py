@@ -130,7 +130,7 @@ def position_slot(s):
         slot(s, 16, 72)
 
 
-TRANSPORT_WELLS = ((15, 87, 116, 20), (135, 88, 23, 18))  # the transport's and Open's black frames
+TRANSPORT_WELLS = ((15, 87, 116, 20), (135, 88, 24, 18))  # the transport's and Open's black frames
 TOGGLE_WELLS = (((219, 58, 22, 11), "eq"), ((244, 58, 21, 11), "pl"))
 # The shuffle sprite's two buttons and the repeat sprite's one: the black frame in the main window, as large as EQ's,
 # and the bars (none for repeat)
