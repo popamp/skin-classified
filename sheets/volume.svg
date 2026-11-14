@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68" height="433" viewBox="0 0 68 433">
 <defs>
-<linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="-100.00" y1="0.00" x2="161.00" y2="0.00"><stop offset="0.050" stop-color="#5c5c68"/><stop offset="0.149" stop-color="#7f7f90"/><stop offset="0.249" stop-color="#848496"/><stop offset="0.349" stop-color="#858597"/><stop offset="0.448" stop-color="#808091"/><stop offset="0.548" stop-color="#808092"/><stop offset="0.648" stop-color="#818193"/><stop offset="0.747" stop-color="#818193"/><stop offset="0.847" stop-color="#808091"/><stop offset="0.948" stop-color="#605f6b"/></linearGradient>
-<linearGradient id="p2" gradientUnits="userSpaceOnUse" x1="0.00" y1="3.00" x2="0.00" y2="10.00"><stop offset="0.071" stop-color="#383840"/><stop offset="0.214" stop-color="#161616"/><stop offset="0.357" stop-color="#202020"/><stop offset="0.500" stop-color="#303030"/><stop offset="0.643" stop-color="#3b3b3b"/><stop offset="0.786" stop-color="#404040"/><stop offset="0.929" stop-color="#404040"/></linearGradient>
+<linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="-100.00" y1="0.00" x2="161.00" y2="0.00"><stop class="tone-384-stop" offset="0.050" stop-color="#5c5c68"/><stop class="tone-531-stop" offset="0.149" stop-color="#7f7f90"/><stop class="tone-553-stop" offset="0.249" stop-color="#848496"/><stop class="tone-557-stop" offset="0.349" stop-color="#858597"/><stop class="tone-535-stop" offset="0.448" stop-color="#808091"/><stop class="tone-537-stop" offset="0.548" stop-color="#808092"/><stop class="tone-541-stop" offset="0.648" stop-color="#818193"/><stop class="tone-541-stop" offset="0.747" stop-color="#818193"/><stop class="tone-535-stop" offset="0.847" stop-color="#808091"/><stop class="tone-396-stop" offset="0.948" stop-color="#605f6b"/></linearGradient>
+<linearGradient id="p2" gradientUnits="userSpaceOnUse" x1="0.00" y1="3.00" x2="0.00" y2="10.00"><stop class="tone-235-stop" offset="0.071" stop-color="#383840"/><stop class="tone-86-stop" offset="0.214" stop-color="#161616"/><stop class="tone-125b-stop" offset="0.357" stop-color="#202020"/><stop class="tone-188-stop" offset="0.500" stop-color="#303030"/><stop class="tone-231-stop" offset="0.643" stop-color="#3b3b3b"/><stop class="tone-251b-stop" offset="0.786" stop-color="#404040"/><stop class="tone-251b-stop" offset="0.929" stop-color="#404040"/></linearGradient>
 <linearGradient id="p3" gradientUnits="userSpaceOnUse" x1="-137.96" y1="381.19" x2="-133.90" y2="369.98"><stop offset="0.000" stop-color="#7d7771"/><stop offset="1.000" stop-color="#a39b94"/></linearGradient>
 <linearGradient id="p4" gradientUnits="userSpaceOnUse" x1="121.51" y1="403.73" x2="118.10" y2="392.40"><stop offset="0.000" stop-color="#9c958e"/><stop offset="1.000" stop-color="#f8efe3"/></linearGradient>
 </defs>
 <g id="frame">
 <rect x="0" y="0" width="68" height="14" fill="url(#p1)"/>
-<rect x="1" y="4" width="64" height="7" rx="3.5" fill="#aaaab6"/>
+<rect class="tone-690" x="1" y="4" width="64" height="7" rx="3.5" fill="#aaaab6"/>
 <rect x="0" y="3" width="64" height="7" rx="3.5" fill="url(#p2)"/>
 </g>
 <use xlink:href="#frame" transform="translate(0,15)"/>

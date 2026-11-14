@@ -125,10 +125,21 @@ def position_slot(s):
         slot(s, 16, 72)
 
 
-def transport(s):
-    for f in [(15, 87, 116, 20), (135, 88, 23, 18)]:
+TRANSPORT_WELLS = ((15, 87, 116, 20), (135, 88, 23, 18))  # the transport's and Open's black frames
+TOGGLE_WELLS = (((219, 58, 22, 11), "eq"), ((244, 58, 21, 11), "pl"))
+PLAY_MODE_WELLS = (((163, 91, 23, 11), BARS_MIXED, 3), ((189, 91, 23, 11), BARS_RISING, 3))
+REPEAT_WELL = (215, 91, 23, 11)
+
+
+def wells(s, frames):
+    """Black frames sunk into the metal."""
+    for f in frames:
         socket(s, f)
         s.rect(*f, BLACK)
+
+
+def transport(s):
+    wells(s, TRANSPORT_WELLS)
     with s.source(ref="cbuttons", dx=-16, dy=-88):
         inks = transport_inks(s, 16 + 69, 88)
         for i, name in enumerate(n for n in TRANSPORT if n != "eject"):
@@ -148,13 +159,13 @@ def main(s):
     groove(s, 107, 60, 64, 7)
     position_slot(s)
     transport(s)
-    for frame, which in [((219, 58, 22, 11), "eq"), ((244, 58, 21, 11), "pl")]:
+    for frame, which in TOGGLE_WELLS:
         socket(s, frame)
         word_button(s, frame, which, False)
-    for frame, table, dx in [((163, 91, 23, 11), BARS_MIXED, 3), ((189, 91, 23, 11), BARS_RISING, 3)]:
+    for frame, table, dx in PLAY_MODE_WELLS:
         socket(s, frame)
         bars_button(s, frame, table, False, dx)
-    socket(s, (215, 91, 23, 11))
-    loop_button(s, (215, 91, 23, 11), False)
+    socket(s, REPEAT_WELL)
+    loop_button(s, REPEAT_WELL, False)
     popamp_bolt(s, LOGO_CX, LOGO_CY, 22)
     resize_grip(s)

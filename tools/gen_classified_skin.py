@@ -2,6 +2,10 @@
 
     python3 -I -B tools/gen_classified_skin.py OUT_DIR [--ref SKIN.wsz] [--psz FILE]
 
+The main window also has a bar view, a strip across the screen put together
+from the same sheets, and there is a media library window in the playlist's
+frame. The metal can take another colour from the main menu (colour sets).
+
 Without --ref the colours fitted earlier (tools/fits.json) are used, so the
 reference skin is not needed for a build.
 """
@@ -12,12 +16,16 @@ import zipfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import art_bar  # noqa: E402
 import art_eq  # noqa: E402
 import art_main  # noqa: E402
+import art_ml  # noqa: E402
 import art_pl  # noqa: E402
 import art_sliders  # noqa: E402
 import art_title  # noqa: E402
+import windows  # noqa: E402
 from svgkit import Fits, Sheet  # noqa: E402
+from tones import Tones  # noqa: E402
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 
@@ -39,6 +47,8 @@ SHEETS = {
     "eq_ex": (275, 82, art_eq.eq_ex),
     "pledit": (280, 186, art_pl.pledit),
 }
+# The display's lettering and lamps, which the colour sets leave as they are
+DISPLAY_SHEETS = {"text", "numbers", "nums_ex", "monoster", "playpaus"}
 
 META = """\
 # Classified: grey metal and cream buttons, after a classic 2004 skin.
@@ -52,13 +62,7 @@ format_version = 1
 
 
 # The reference's pledit.txt and viscolor.txt
-PLAYLIST = """\
-[playlist]
-normal = "#c4ffc4"
-current = "#ffffff"
-normal_bg = "#000000"
-selected_bg = "#6b6b6f"
-"""
+PLAYLIST = {"normal": "#c4ffc4", "current": "#ffffff", "normal_bg": "#000000", "selected_bg": "#6b6b6f"}
 
 # Background, background dots, 16 spectrum colours from the top of a bar down, 5 oscilloscope colours, the peak dots.
 VIS = [
@@ -68,31 +72,43 @@ VIS = [
 ]
 
 
-def skin_toml():
-    lines = [META, "[sheets]"]
+def skin_toml(tones):
+    playlist = [f'{k} = "{tones.named(c)}"' for k, c in PLAYLIST.items()]  # before the sets, which list what it names
+    lines = [META, *tones.sets(), "[sheets]"]
     lines += [f'{name} = "sheets/{name}.svg"' for name in SHEETS]
-    lines += ["", PLAYLIST, "[vis]", "colors = ["]
+    lines += ["", "[playlist]", *playlist]
+    lines += ["", "[vis]", "colors = ["]
     lines += ["    " + ", ".join(f'"{c}"' for c in VIS[i : i + 8]) + "," for i in range(0, 24, 8)]
-    lines += ["]"]
+    lines += ["]", *windows.bar_window(), *windows.library_window(art_ml.TITLE_AT[2])]
     return "\n".join(lines) + "\n"
 
 
 def build(out, ref):
-    fits = Fits(os.path.join(TOOLS, "fits.json"), ref)
+    fits, tones = Fits(os.path.join(TOOLS, "fits.json"), ref), Tones()
     for name, (w, h, draw) in SHEETS.items():
-        s = Sheet(fits, name, w, h)
+        s = Sheet(fits, name, w, h, None if name in DISPLAY_SHEETS else tones)
         draw(s)
         s.save(os.path.join(out, "sheets", f"{name}.svg"))
+    for name, (w, h, draw) in art_bar.PICTURES.items():
+        s = Sheet(fits, "main", w, h, tones)
+        draw(s)
+        s.save(os.path.join(out, "bar", f"{name}.svg"))
+    for name, ((x, y, w, h), draw) in art_ml.PICTURES.items():
+        s = Sheet(fits, "pledit", w, h, tones, origin=(x, y))
+        draw(s)
+        s.save(os.path.join(out, "ml", f"{name}.svg"))
+    # after everything that draws, so every grey in use is in the sets
     with open(os.path.join(out, "skin.toml"), "w") as f:
-        f.write(skin_toml())
+        f.write(skin_toml(tones))
     fits.save()
 
 
 def pack(out, psz):
     with zipfile.ZipFile(psz, "w", zipfile.ZIP_DEFLATED) as z:
         z.write(os.path.join(out, "skin.toml"), "skin.toml")
-        for name in sorted(os.listdir(os.path.join(out, "sheets"))):
-            z.write(os.path.join(out, "sheets", name), f"sheets/{name}")
+        for folder in ("sheets", "bar", "ml"):
+            for name in sorted(os.listdir(os.path.join(out, folder))):
+                z.write(os.path.join(out, folder, name), f"{folder}/{name}")
 
 
 def main():

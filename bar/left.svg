@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="322" height="22" viewBox="0 0 322 22">
+<defs>
+<linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="52.62" y1="23.63" x2="150.06" y2="67.40"><stop class="tone-682-stop" offset="0.000" stop-color="#a3a3b9"/><stop class="tone-747-stop" offset="1.000" stop-color="#b2b2cb"/></linearGradient>
+<linearGradient id="p2" gradientUnits="userSpaceOnUse" x1="-9.34" y1="104.88" x2="-6.57" y2="73.79"><stop class="tone-147-stop" offset="0.000" stop-color="#232328"/><stop class="tone-294-stop" offset="1.000" stop-color="#464650"/></linearGradient>
+<linearGradient id="p3" gradientUnits="userSpaceOnUse" x1="-3.14" y1="82.87" x2="-3.86" y2="101.71"><stop offset="0.000" stop-color="#000000"/><stop class="tone-747-stop" offset="1.000" stop-color="#b2b2cb"/></linearGradient>
+<linearGradient id="p4" gradientUnits="userSpaceOnUse" x1="0.80" y1="107.00" x2="0.66" y2="88.00"><stop class="tone-251-stop" offset="0.000" stop-color="#3c3c44"/><stop class="tone-269-stop" offset="1.000" stop-color="#404049"/></linearGradient>
+</defs>
+<rect class="tone-541" x="0" y="0" width="322" height="22" fill="#818193"/>
+<rect class="tone-345" x="0" y="0" width="322" height="1" fill="#52525e"/>
+<rect class="tone-590" x="0" y="1" width="322" height="1" fill="#8d8da0"/>
+<rect class="tone-106" x="0" y="20" width="322" height="1" fill="#19191d"/>
+<rect class="tone-104" x="0" y="21" width="322" height="1" fill="#19191c"/>
+<g transform="translate(2 -86)">
+<rect x="14" y="86" width="118" height="22" fill="url(#p1)"/>
+<rect x="14" y="86" width="117" height="21" fill="url(#p2)"/>
+<rect x="15" y="87" width="116" height="20" fill="#000000"/>
+<rect x="134" y="87" width="25" height="20" fill="url(#p3)"/>
+<rect x="134" y="87" width="24" height="19" fill="url(#p4)"/>
+<rect x="135" y="88" width="23" height="18" fill="#000000"/>
+</g>
+<rect class="tone-747" x="163" y="1" width="159" height="20" fill="#b2b2cb"/>
+<rect class="tone-265" x="163" y="1" width="159" height="1" fill="#3f3f48"/>
+<rect class="tone-188b" x="163" y="1" width="1" height="19" fill="#2d2d33"/>
+<rect x="164" y="2" width="158" height="18" fill="#000000"/>
+<rect x="214" y="8" width="3" height="1" fill="#ffffff"/>
+<rect x="214" y="11" width="3" height="1" fill="#ffffff"/>
+</svg>

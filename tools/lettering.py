@@ -63,3 +63,17 @@ def centred(text, cx, baseline, cap, weight="Regular"):
         placed.append((glyph, pen))
         pen += face.glyphs[glyph].width * face.scale
     return face.draw(text, placed, baseline)
+
+
+def spaced_like(text, model, left, right, cap=7, weight="Bold"):
+    """Where `text` starts and ends, centred on `model`'s span, with the tracking `model` has there."""
+    face = Face(weight, cap)
+    kerned = lambda t: face.natural(t) + sum(KERN.get(t[i : i + 2], 0) for i in range(len(t) - 1))
+    tracking = (right - left - kerned(model)) / (len(model) - 1)
+    w = kerned(text) + tracking * (len(text) - 1)
+    return (left + right - w) / 2, (left + right + w) / 2
+
+
+def fitted_cap(text, width, cap, weight="Regular"):
+    """The capital height, at most `cap`, at which `text` is no wider than `width`."""
+    return min(cap, cap * width / Face(weight, cap).natural(text))

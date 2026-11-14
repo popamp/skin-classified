@@ -30,10 +30,14 @@ def top_left(s, y):
     s.rect(6, y + 19, 4, 1, s.color(7, y + 18))
 
 
-def title_tile(s, y, active):
+TITLE_TEXT, TITLE_SPAN = "PLAYLIST EDITOR", (30, 122)
+
+
+def title_tile(s, y, active, text=TITLE_TEXT, span=TITLE_SPAN):
+    """The plate a window's name sits on in the middle of the title bar, 100 wide."""
     strip_ground(s, 26, y, 100)
     s.vfill(26, y + 5, 1, 6, 26)
-    title(s, "PLAYLIST EDITOR", 30, 122, y, active)
+    title(s, text, *span, y, active)
 
 
 def top_tile(s, y):

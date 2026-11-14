@@ -68,8 +68,10 @@ class Fits:
 class Sheet:
     """One SVG picture; `ref` names the reference bitmap its fits are measured on."""
 
-    def __init__(self, fits, ref, w, h):
+    def __init__(self, fits, ref, w, h, tones=None, origin=(0, 0)):
+        """`tones` marks the metal's colours for the colour sets; `origin` is the drawing position at the picture's top left."""
         self.fits, self.ref, self.w, self.h = fits, ref, w, h
+        self.tones, self.origin = tones, origin
         self.defs, self.body, self.n = [], [], 0
         self.src = (ref, 0, 0)  # where fits are measured: sheet, and offset from the drawing position
 
@@ -171,10 +173,15 @@ class Sheet:
     def use(self, gid, dx, dy):
         self.add(f'<use xlink:href="#{gid}" transform="translate({dx},{dy})"/>')
 
-    def ring(self, x, y, w, h):
-        """A 1-pixel bevel: top and left edge in one fitted paint, bottom and right in another."""
+    def ring_paints(self, x, y, w, h):
+        """The fitted paints of a bevel's top-left and bottom-right edges."""
         tl = self._fit("ring-tl", (x, y, w, h), lambda img: _fit().lin_ring(img, x, y, w, h, True))
         br = self._fit("ring-br", (x, y, w, h), lambda img: _fit().lin_ring(img, x, y, w, h, False))
+        return tl, br
+
+    def ring(self, x, y, w, h):
+        """A 1-pixel bevel: top and left edge in one fitted paint, bottom and right in another."""
+        tl, br = self.ring_paints(x, y, w, h)
         self.rect(x, y, w, h, br)
         self.rect(x, y, w - 1, h - 1, tl)
         return x + 1, y + 1, w - 2, h - 2
@@ -190,13 +197,16 @@ class Sheet:
             self.path(d, colour)
 
     def save(self, path):
+        x0, y0 = self.origin
         text = (
             f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{self.w}" height="{self.h}" '
-            f'viewBox="0 0 {self.w} {self.h}">\n'
+            f'viewBox="{x0} {y0} {self.w} {self.h}">\n'
             + ("<defs>\n" + "\n".join(self.defs) + "\n</defs>\n" if self.defs else "")
             + "\n".join(self.body)
             + "\n</svg>\n"
         )
+        if self.tones:
+            text = self.tones.mark(text)
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
             f.write(text)
