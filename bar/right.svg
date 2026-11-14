@@ -3,9 +3,9 @@
 <linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="142.02" y1="-93.51" x2="120.78" y2="-79.52"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
 <linearGradient id="p2" gradientUnits="userSpaceOnUse" x1="230.68" y1="-65.66" x2="207.39" y2="-59.03"><stop class="tone-667-stop" offset="0.000" stop-color="#9f9fb5"/><stop class="tone-747-stop" offset="1.000" stop-color="#b2b2cb"/></linearGradient>
 <linearGradient id="p3" gradientUnits="userSpaceOnUse" x1="268.08" y1="29.33" x2="246.34" y2="26.95"><stop class="tone-202-stop" offset="0.000" stop-color="#303037"/><stop class="tone-265-stop" offset="1.000" stop-color="#3f3f48"/></linearGradient>
-<linearGradient id="p4" gradientUnits="userSpaceOnUse" x1="87.80" y1="-57.80" x2="66.56" y2="-43.82"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
-<linearGradient id="p5" gradientUnits="userSpaceOnUse" x1="105.24" y1="-69.29" x2="84.00" y2="-55.31"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
-<linearGradient id="p6" gradientUnits="userSpaceOnUse" x1="-3.66" y1="80.00" x2="-4.26" y2="93.03"><stop class="tone-508-stop" offset="0.000" stop-color="#79798a"/><stop class="tone-784-stop" offset="1.000" stop-color="#bbbbd5"/></linearGradient>
+<linearGradient id="p4" gradientUnits="userSpaceOnUse" x1="88.49" y1="-58.26" x2="67.26" y2="-44.28"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
+<linearGradient id="p5" gradientUnits="userSpaceOnUse" x1="105.93" y1="-69.75" x2="84.70" y2="-55.77"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
+<linearGradient id="p6" gradientUnits="userSpaceOnUse" x1="123.37" y1="-81.23" x2="102.14" y2="-67.25"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
 </defs>
 <rect class="tone-541" x="0" y="0" width="227" height="22" fill="#818193"/>
 <rect class="tone-345" x="0" y="0" width="227" height="1" fill="#52525e"/>
@@ -23,14 +23,11 @@
 <rect x="243" y="57" width="22" height="12" fill="url(#p3)"/>
 </g>
 <g transform="translate(-31 -86)">
-<rect x="162" y="90" width="24" height="13" fill="url(#p4)"/>
-<rect class="tone-276" x="162" y="90" width="23" height="12" fill="#42424b"/>
-<rect x="163" y="91" width="22" height="11" fill="#000000"/>
-<rect x="187" y="90" width="24" height="13" fill="url(#p5)"/>
-<rect class="tone-276" x="187" y="90" width="23" height="12" fill="#42424b"/>
-<rect x="188" y="91" width="22" height="11" fill="#000000"/>
-<rect x="212" y="90" width="25" height="13" fill="url(#p6)"/>
-<rect class="tone-276" x="212" y="90" width="24" height="12" fill="#42424b"/>
-<rect x="213" y="91" width="23" height="11" fill="#000000"/>
+<rect x="163" y="90" width="24" height="13" fill="url(#p4)"/>
+<rect class="tone-276" x="163" y="90" width="23" height="12" fill="#42424b"/>
+<rect x="188" y="90" width="24" height="13" fill="url(#p5)"/>
+<rect class="tone-276" x="188" y="90" width="23" height="12" fill="#42424b"/>
+<rect x="213" y="90" width="24" height="13" fill="url(#p6)"/>
+<rect class="tone-276" x="213" y="90" width="23" height="12" fill="#42424b"/>
 </g>
 </svg>

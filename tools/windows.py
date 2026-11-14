@@ -1,5 +1,6 @@
 """The windows skin.toml lays out itself: the main window's bar view and the media library."""
-from art_bar import BAR_BUTTON, BAR_H, BAR_LEFT, BAR_MIN, BAR_RIGHT, CLOCK, DISPLAY_X, GROOVE_Y, PLAY_MODE_FRAMES, PLAY_MODES_AT
+from art_bar import BAR_BUTTON, BAR_H, BAR_LEFT, BAR_MIN, BAR_RIGHT, CLOCK, DISPLAY_X, GROOVE_Y, PLAY_MODES_AT
+from art_main import PLAY_MODES, REPEAT_SPRITE, SHUFFLE_SPRITE
 
 BAR_WINDOW = f"""
 # --- the main window's bar view, from the sheets above ---
@@ -63,18 +64,15 @@ def toggle(sheet_box, at, states, flag, click, **more):
     return element("toggle", (end(x), y, end(x + w), y + h), **pics, flag=flag, click=click, **more)
 
 
-# Where the shuffle and repeat sprites sit in the main window, and their place in shufrep: (x, y, sheet x, width)
-SHUFFLE_SPRITE, REPEAT_SPRITE = (164, 89, 28, 47), (210, 89, 0, 28)
 PLAY_MODE_STATES = ((0, 0), (0, 15), (0, 30), (0, 45))
 
 
 def play_mode(frame, sprite, flag, click, **more):
-    """The part of a shuffle or repeat sprite inside one of its wells' black frames; the bar draws the wells round it."""
-    (fx, fy, fw, fh), (ox, oy, sx, sw) = frame, sprite
-    left, right = max(fx, ox), min(fx + fw, ox + sw)
+    """One button of a shuffle or repeat sprite, from its black frame in: the bar draws the rim round it."""
+    (fx, fy, fw, fh), (ox, oy, sx, _) = frame, sprite
     dx, dy = PLAY_MODES_AT
     states = [(x, y + fy - oy) for x, y in PLAY_MODE_STATES]
-    return toggle((sx + left - ox, right - left, fh), (left + dx, fy + dy), states, flag, click, **more)
+    return toggle((sx + fx - ox, fw, fh), (fx + dx, fy + dy), states, flag, click, **more)
 
 
 def bar_window():
@@ -119,7 +117,7 @@ def bar_window():
     # the sprites as the main window shows them, where TOGGLES_AT and PLAY_MODES_AT put its wells
     e += toggle((0, 23, 12), (82, 5), ((0, 61), (46, 61), (0, 73), (46, 73)), "eq-window", "toggle-eq-window")
     e += toggle((23, 23, 12), (105, 5), ((0, 61), (46, 61), (0, 73), (46, 73)), "playlist-window", "toggle-playlist-window")
-    *shuffle, repeat = PLAY_MODE_FRAMES
+    *shuffle, repeat = (frame for frame, *_ in PLAY_MODES)
     for frame in shuffle:
         e += play_mode(frame, SHUFFLE_SPRITE, "shuffle", "toggle-shuffle", menu="shuffle")
     e += play_mode(repeat, REPEAT_SPRITE, "repeat", "toggle-repeat", menu="repeat")

@@ -6,7 +6,7 @@ moved onto the bar, so both look the same and the fits are the same ones.
 """
 from contextlib import contextmanager
 
-from art_main import TOGGLE_WELLS, TRANSPORT_WELLS, wells
+from art_main import PLAY_MODES, TOGGLE_WELLS, TRANSPORT_WELLS, play_mode_socket, wells
 from art_parts import BLACK, face, glyph, socket
 from art_sliders import panel_fit
 
@@ -20,8 +20,6 @@ TRANSPORT_AT = (2, -86)
 # Where the main window's EQ and PL wells, and its shuffle and repeat wells, go on the bar
 TOGGLES_AT = (-137, -53)
 PLAY_MODES_AT = (-31, -86)
-# The black frames of the shuffle sprite's two buttons and the repeat sprite's one, where the main window shows them
-PLAY_MODE_FRAMES = ((163, 91, 22, 11), (188, 91, 22, 11), (213, 91, 23, 11))
 # The display: its well from x, the clock's colon from the clock's left
 DISPLAY_X = 163
 CLOCK, COLON = (178, 4), (36, 4, 7)
@@ -99,14 +97,10 @@ def right(s):
     with moved(s, *TOGGLES_AT):
         for frame, _ in TOGGLE_WELLS:
             socket(s, frame)
-    # black frames as well: the bar shows only the sprites' insides of them, and the shuffle sprite leaves out the first's left side;
-    # their rims are the EQ well's, as the main window's own rims there lie under the sprites
-    (ex, ey, _, _), _ = TOGGLE_WELLS[0]
+    # the rims the main window has round the sprites' buttons, which the bar shows from the same sprites
     with moved(s, *PLAY_MODES_AT):
-        for x, y, w, h in PLAY_MODE_FRAMES:
-            with s.source(dx=ex - x, dy=ey - y):
-                wells(s, [(x, y, w, h)])
-
+        for frame, *_ in PLAY_MODES:
+            play_mode_socket(s, frame)
 
 # The title bar's buttons the bar has, and the middle of each glyph; both take the menu button's face (normal, pressed)
 BUTTONS = (("menu", 4), ("close", 3.5))

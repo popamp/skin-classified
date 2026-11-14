@@ -9,8 +9,9 @@ BOLT = ((-10.43, -59.4), (23.46, -59.4), (0, -19.92), (30.91, -19.92), (-19.74, 
 LOGO_CX, LOGO_CY = 253.5, 94
 DISPLAY = "M11 21H265V53H107A7 7 0 0 0 100 60V67H11Z"
 TAB_EDGE = "M265 53.5H107A6.5 6.5 0 0 0 100.5 60V67"
-BARS_MIXED = ((7, 5, 2, 3), (10, 3, 2, 5), (13, 6, 2, 2), (16, 4, 2, 4))
-BARS_RISING = ((8, 6, 2, 2), (11, 5, 2, 3), (14, 4, 2, 4), (17, 3, 2, 5))
+# The shuffle icons' bars in a 22 x 11 button, where EQ and PL have their letters
+BARS_MIXED = ((9, 5, 2, 3), (12, 3, 2, 5), (15, 6, 2, 2), (18, 4, 2, 4))
+BARS_RISING = ((9, 6, 2, 2), (12, 5, 2, 3), (15, 4, 2, 4), (18, 3, 2, 5))
 ICON_LABEL = {"eq": ("EQ", 9.5, 18), "pl": ("PL", 10, 17.5)}
 WORD_CAP = 5.5
 
@@ -38,23 +39,26 @@ def bars(s, frame, table, pressed):
     s.path(d, PRESSED_INK if pressed else RAISED_INK)
 
 
-def bars_button(s, frame, table, pressed, lamp_dx):
+def lamp_toggle(s, frame, pressed):
+    """A toggle like EQ and PL: the cream button in its black frame, its lamp at the left."""
     lamp_button(s, frame, pressed)
-    lamp(s, frame[0] + lamp_dx, frame[1] + 3, 2)
+    lamp(s, frame[0] + 3, frame[1] + 3, 3)
+
+
+def bars_button(s, frame, table, pressed):
+    lamp_toggle(s, frame, pressed)
     bars(s, frame, table, pressed)
 
 
 def loop_button(s, frame, pressed):
-    lamp_button(s, frame, pressed)
-    lamp(s, frame[0] + 3, frame[1] + 3, 2)
+    lamp_toggle(s, frame, pressed)
     for d in LOOP:
         s.stroke(d, PRESSED_INK if pressed else RAISED_INK, LOOP_STROKE, f' transform="translate({frame[0]} {frame[1]})"')
 
 
 def word_button(s, frame, which, pressed):
     """The EQ or PL toggle: lamp and two letters."""
-    lamp_button(s, frame, pressed)
-    lamp(s, frame[0] + 3, frame[1] + 3, 3)
+    lamp_toggle(s, frame, pressed)
     text, left, right = ICON_LABEL[which]
     span_label(s, text, frame[0] + left, frame[0] + right, frame[1] + 8, WORD_CAP, PRESSED_INK if pressed else RAISED_INK)
 
@@ -67,14 +71,14 @@ def backing(s, x, y, w, h, rows=()):
 
 
 def shufrep(s):
-    shuffle_pressed = [(False, False), (True, False), (False, False), (False, True)]
-    for i in range(4):
-        y = 15 * i
-        pressed = i % 2 == 1
-        backing(s, 0, y, 75, 15, ((0, 1), (13, 2)))
-        loop_button(s, (3, y + 2, 23, 11), pressed)
-        bars_button(s, (28, y + 2, 21, 11), BARS_MIXED, shuffle_pressed[i][0], 2)
-        bars_button(s, (52, y + 2, 22, 11), BARS_RISING, shuffle_pressed[i][1], 3)
+    """Each row of the shuffle and repeat sprites is the main window's own play-mode area in that row's state."""
+    for i in range(len(EQ_STATES)):
+        for mx, my, sx, w in (SHUFFLE_SPRITE, REPEAT_SPRITE):
+            clip = f"playmodes{i}-{sx}"
+            s.defs.append(f'<clipPath id="{clip}"><rect x="{sx}" y="{15 * i}" width="{w}" height="15"/></clipPath>')
+            s.add(f'<g clip-path="url(#{clip})"><g transform="translate({sx - mx} {15 * i - my})">')
+            play_modes(s, i)
+            s.add("</g></g>")
     for y in (61, 73):
         backing(s, 0, y, 92, 12, ((11, 1),))
         word_button(s, (0, y, 22, 11), "eq", False)
@@ -128,8 +132,15 @@ def position_slot(s):
 
 TRANSPORT_WELLS = ((15, 87, 116, 20), (135, 88, 23, 18))  # the transport's and Open's black frames
 TOGGLE_WELLS = (((219, 58, 22, 11), "eq"), ((244, 58, 21, 11), "pl"))
-PLAY_MODE_WELLS = (((163, 91, 23, 11), BARS_MIXED, 3), ((189, 91, 23, 11), BARS_RISING, 3))
-REPEAT_WELL = (215, 91, 23, 11)
+# The shuffle sprite's two buttons and the repeat sprite's one: the black frame in the main window, as large as EQ's,
+# and the bars (none for repeat)
+PLAY_MODES = (((164, 91, 22, 11), BARS_MIXED), ((189, 91, 22, 11), BARS_RISING), ((214, 91, 22, 11), None))
+# The EQ button in the reference's shufrep sheet in each of the sprites' four rows (off, off pressed, on, on pressed):
+# the play-mode buttons take its colours, state by state
+EQ_STATES = ((0, 61), (46, 61), (0, 73), (46, 73))
+# The play-mode area of the main window, and where the player shows the sprites in it: (x, y, sheet x, width)
+PLAY_MODE_AREA = (163, 89, 75, 15)
+SHUFFLE_SPRITE, REPEAT_SPRITE = (164, 89, 28, 47), (210, 89, 0, 28)
 
 
 def wells(s, frames):
@@ -137,6 +148,27 @@ def wells(s, frames):
     for f in frames:
         socket(s, f)
         s.rect(*f, BLACK)
+
+
+def play_mode_socket(s, frame):
+    """A play-mode button's rim: the EQ well's, which is as large, wherever the button is shown."""
+    (ex, ey, _, _), _ = TOGGLE_WELLS[0]
+    with s.source(ref="main", dx=ex - frame[0], dy=ey - frame[1], absolute=True):
+        socket(s, frame)
+
+
+def play_modes(s, row=0):
+    """The play-mode area in main window coordinates: the panel's metal, the rims and the buttons as EQ is in sprite row `row`."""
+    s.rect(*PLAY_MODE_AREA, panel_fit(s))
+    ex, ey = EQ_STATES[row]
+    for frame, table in PLAY_MODES:
+        play_mode_socket(s, frame)
+        x, y = frame[:2]
+        with s.source(ref="shufrep", dx=ex - x, dy=ey - y, absolute=True):
+            if table:
+                bars_button(s, frame, table, False)
+            else:
+                loop_button(s, frame, False)
 
 
 def transport(s):
@@ -163,10 +195,6 @@ def main(s):
     for frame, which in TOGGLE_WELLS:
         socket(s, frame)
         word_button(s, frame, which, False)
-    for frame, table, dx in PLAY_MODE_WELLS:
-        socket(s, frame)
-        bars_button(s, frame, table, False, dx)
-    socket(s, REPEAT_WELL)
-    loop_button(s, REPEAT_WELL, False)
+    play_modes(s)
     popamp_bolt(s, LOGO_CX, LOGO_CY, 22)
     resize_grip(s)

@@ -39,8 +39,8 @@ GLYPHS = {
 GLYPH_STROKE = 1.2
 MINI_TRANSPORT = ("prev", "play", "pause", "stop", "next")
 
-# The repeat icon in its 23 x 11 frame: a circle open at the bottom left, and the arrowhead its end points into
-LOOP = ("M11 5A2.5 2.5 0 1 1 13.5 7.5", "M13 6.5L12 7.5L13 8.5")
+# The repeat icon in its 22 x 11 frame: a circle open at the bottom left, and the arrowhead its end points into
+LOOP = ("M12 5A2.5 2.5 0 1 1 14.5 7.5", "M14 6.5L13 7.5L14 8.5")
 # A line a little wider than a pixel, so the curve keeps the bars' black where it crosses pixels
 LOOP_STROKE = 1.4
 
