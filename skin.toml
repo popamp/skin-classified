@@ -1253,7 +1253,7 @@ type = "slider"
 edges = ["end-218", 4, "end-150", 17]
 value = "volume"
 track = { file = "sheets/volume.svg", first = [0, 0, 68, 13], step = [0, 15], count = 28 }
-thumb = { normal = { file = "sheets/volume.svg", area = [15, 422, 14, 11] }, pressed = { file = "sheets/volume.svg", area = [0, 422, 14, 11] } }
+thumb = { normal = { file = "sheets/volume.svg", area = [15, 422, 14, 11], offset = [0, 1] }, pressed = { file = "sheets/volume.svg", area = [0, 422, 14, 11], offset = [0, 1] } }
 thumb_len = 14
 reset = 200
 wheel_step = 8

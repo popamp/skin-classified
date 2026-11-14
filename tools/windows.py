@@ -98,7 +98,8 @@ def bar_window():
     e += element("slider", (BAR_LEFT, top, end(0), top + 8), value="position", thumb=thumb, thumb_len=29, live=False,
                  show="seekable", cursor="posbar", menu="seek")  # fmt: skip
     track = {"file": "sheets/volume.svg", "first": [0, 0, 68, 13], "step": [0, 15], "count": 28}
-    thumb = {"normal": area("volume", 15, 422, 14, 11), "pressed": area("volume", 0, 422, 14, 11)}
+    # a row below the track's top, as the main window shows it, so it sits on the groove
+    thumb = {k: area("volume", x, 422, 14, 11) | {"offset": [0, 1]} for k, x in (("normal", 15), ("pressed", 0))}
     e += element("slider", (end(9), 4, end(77), 17), value="volume", track=track, thumb=thumb, thumb_len=14, reset=200,
                  wheel_step=8, cursor="volbal", tip="Volume")  # fmt: skip
     # the sprites as the main window shows them, where TOGGLES_AT and PLAY_MODES_AT put its wells
