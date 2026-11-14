@@ -1,5 +1,5 @@
 """The main window and its button sheets."""
-from art_parts import (BLACK, LOOP, PRESS_SHIFT, RAISED_INK, PRESSED_INK, TRANSPORT, cream_button, cream_button_down, lamp, lamp_button, label,
+from art_parts import (BLACK, LOOP, LOOP_STROKE, PRESS_SHIFT, RAISED_INK, PRESSED_INK, TRANSPORT, cream_button, cream_button_down, lamp, lamp_button, label,
                        resize_grip, socket, span_label, transport_icon, transport_inks, window_frame)
 from art_sliders import MAIN_PANEL, groove, panel_fit
 from art_title import main_strip
@@ -47,7 +47,8 @@ def bars_button(s, frame, table, pressed, lamp_dx):
 def loop_button(s, frame, pressed):
     lamp_button(s, frame, pressed)
     lamp(s, frame[0] + 3, frame[1] + 3, 2)
-    s.stroke(LOOP, PRESSED_INK if pressed else RAISED_INK, 1, f' transform="translate({frame[0] - 3} {frame[1] - 2})"')
+    for d in LOOP:
+        s.stroke(d, PRESSED_INK if pressed else RAISED_INK, LOOP_STROKE, f' transform="translate({frame[0]} {frame[1]})"')
 
 
 def word_button(s, frame, which, pressed):

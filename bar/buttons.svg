@@ -9,12 +9,12 @@
 <g transform="translate(1 1) scale(1.125000 1.285714) translate(0 -1)">
 <rect x="0" y="1" width="8" height="7" fill="url(#p1)"/>
 </g>
-<path d="M1.5 2.5L2.5 1.5L3.5 2.5M1 3.5H7M4.5 4.5L5.5 5.5L6.5 4.5" fill="none" stroke="#000000" stroke-width="1.2" transform="translate(1.5 2.0)"/>
+<path d="M1 2.5L2.5 1L4 2.5ZM1 3h6v1H1zM4 4.5L5.5 6L7 4.5Z" fill="#000000" transform="translate(1.5 2.0)"/>
 <rect x="0" y="11" width="11" height="11" fill="#000000"/>
 <g transform="translate(1 12) scale(1.125000 1.285714) translate(0 -10)">
 <rect x="0" y="10" width="8" height="7" fill="url(#p2)"/>
 </g>
-<path d="M1.5 2.5L2.5 1.5L3.5 2.5M1 3.5H7M4.5 4.5L5.5 5.5L6.5 4.5" fill="none" stroke="#000000" stroke-width="1.2" transform="translate(1.5 13.0)"/>
+<path d="M1 2.5L2.5 1L4 2.5ZM1 3h6v1H1zM4 4.5L5.5 6L7 4.5Z" fill="#000000" transform="translate(1.5 13.0)"/>
 <rect x="11" y="0" width="11" height="11" fill="#000000"/>
 <g transform="translate(12 1) scale(1.125000 1.285714) translate(0 -1)">
 <rect x="0" y="1" width="8" height="7" fill="url(#p3)"/>
