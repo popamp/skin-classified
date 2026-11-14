@@ -190,6 +190,7 @@ tone-502 = "#787888"
 tone-502b = "#808080"
 tone-506 = "#78788a"
 tone-506b = "#797989"
+tone-508 = "#79798a"
 tone-512 = "#79798c"
 tone-516 = "#7b7b8c"
 tone-529 = "#7e7e90"
@@ -267,6 +268,7 @@ tone-771 = "#b8b8d1"
 tone-775 = "#b9b9d2"
 tone-776 = "#b9b9d3"
 tone-782 = "#babad5"
+tone-784 = "#bbbbd5"
 tone-859 = "#d4d4e2"
 tone-875 = "#dfdfdf"
 
@@ -454,6 +456,7 @@ tone-502 = "#4e4f50"
 tone-502b = "#4f4f4f"
 tone-506 = "#4e4f52"
 tone-506b = "#4f4f51"
+tone-508 = "#4f4f51"
 tone-512 = "#4e4f53"
 tone-516 = "#505053"
 tone-529 = "#515155"
@@ -531,6 +534,7 @@ tone-771 = "#5f6584"
 tone-775 = "#5f6585"
 tone-776 = "#5e6587"
 tone-782 = "#5d6489"
+tone-784 = "#5e6589"
 tone-859 = "#6b718f"
 tone-875 = "#7f7f7f"
 
@@ -718,6 +722,7 @@ tone-502 = "#818b60"
 tone-502b = "#7d8468"
 tone-506 = "#828d60"
 tone-506b = "#828c61"
+tone-508 = "#828e61"
 tone-512 = "#849060"
 tone-516 = "#849062"
 tone-529 = "#889464"
@@ -795,6 +800,7 @@ tone-771 = "#c1ce9c"
 tone-775 = "#c2ce9d"
 tone-776 = "#c3d09d"
 tone-782 = "#c5d19e"
+tone-784 = "#c5d19f"
 tone-859 = "#d2dab9"
 tone-875 = "#d0d3c7"
 
@@ -982,6 +988,7 @@ tone-502 = "#927459"
 tone-502b = "#8b7461"
 tone-506 = "#957559"
 tone-506b = "#94755a"
+tone-508 = "#95755a"
 tone-512 = "#977659"
 tone-516 = "#97775b"
 tone-529 = "#9c7a5d"
@@ -1059,6 +1066,7 @@ tone-771 = "#d2b398"
 tone-775 = "#d3b499"
 tone-776 = "#d4b498"
 tone-782 = "#d6b699"
+tone-784 = "#d6b69a"
 tone-859 = "#dec8b5"
 tone-875 = "#d6cdc4"
 
@@ -1119,9 +1127,9 @@ normal = "bar/right.svg"
 
 [[window.bar.element]]
 type = "button"
-rect = [4, 6, 10, 10]
-normal = { file = "bar/buttons.svg", area = [0, 0, 10, 10] }
-pressed = { file = "bar/buttons.svg", area = [0, 10, 10, 10] }
+rect = [4, 5, 11, 11]
+normal = { file = "bar/buttons.svg", area = [0, 0, 11, 11] }
+pressed = { file = "bar/buttons.svg", area = [0, 11, 11, 11] }
 menu_press = "main"
 cursor = "mainmenu"
 tip = "Main Menu"
@@ -1282,31 +1290,42 @@ click = "toggle-playlist-window"
 
 [[window.bar.element]]
 type = "toggle"
-edges = ["end-94", 3, "end-47", 18]
-normal = { file = "sheets/shufrep.svg", area = [28, 0, 47, 15] }
-pressed = { file = "sheets/shufrep.svg", area = [28, 15, 47, 15] }
-on = { file = "sheets/shufrep.svg", area = [28, 30, 47, 15] }
-on_pressed = { file = "sheets/shufrep.svg", area = [28, 45, 47, 15] }
+edges = ["end-94", 5, "end-73", 16]
+normal = { file = "sheets/shufrep.svg", area = [28, 2, 21, 11] }
+pressed = { file = "sheets/shufrep.svg", area = [28, 17, 21, 11] }
+on = { file = "sheets/shufrep.svg", area = [28, 32, 21, 11] }
+on_pressed = { file = "sheets/shufrep.svg", area = [28, 47, 21, 11] }
 flag = "shuffle"
 click = "toggle-shuffle"
 menu = "shuffle"
 
 [[window.bar.element]]
 type = "toggle"
-edges = ["end-48", 3, "end-20", 18]
-normal = { file = "sheets/shufrep.svg", area = [0, 0, 28, 15] }
-pressed = { file = "sheets/shufrep.svg", area = [0, 15, 28, 15] }
-on = { file = "sheets/shufrep.svg", area = [0, 30, 28, 15] }
-on_pressed = { file = "sheets/shufrep.svg", area = [0, 45, 28, 15] }
+edges = ["end-70", 5, "end-48", 16]
+normal = { file = "sheets/shufrep.svg", area = [52, 2, 22, 11] }
+pressed = { file = "sheets/shufrep.svg", area = [52, 17, 22, 11] }
+on = { file = "sheets/shufrep.svg", area = [52, 32, 22, 11] }
+on_pressed = { file = "sheets/shufrep.svg", area = [52, 47, 22, 11] }
+flag = "shuffle"
+click = "toggle-shuffle"
+menu = "shuffle"
+
+[[window.bar.element]]
+type = "toggle"
+edges = ["end-45", 5, "end-22", 16]
+normal = { file = "sheets/shufrep.svg", area = [3, 2, 23, 11] }
+pressed = { file = "sheets/shufrep.svg", area = [3, 17, 23, 11] }
+on = { file = "sheets/shufrep.svg", area = [3, 32, 23, 11] }
+on_pressed = { file = "sheets/shufrep.svg", area = [3, 47, 23, 11] }
 flag = "repeat"
 click = "toggle-repeat"
 menu = "repeat"
 
 [[window.bar.element]]
 type = "button"
-edges = ["end-14", 6, "end-4", 16]
-normal = { file = "bar/buttons.svg", area = [10, 0, 10, 10] }
-pressed = { file = "bar/buttons.svg", area = [10, 10, 10, 10] }
+edges = ["end-15", 5, "end-4", 16]
+normal = { file = "bar/buttons.svg", area = [11, 0, 11, 11] }
+pressed = { file = "bar/buttons.svg", area = [11, 11, 11, 11] }
 click = "exit"
 tip = "Close"
 

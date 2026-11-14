@@ -3,12 +3,9 @@
 <linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="142.02" y1="-93.51" x2="120.78" y2="-79.52"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
 <linearGradient id="p2" gradientUnits="userSpaceOnUse" x1="230.68" y1="-65.66" x2="207.39" y2="-59.03"><stop class="tone-667-stop" offset="0.000" stop-color="#9f9fb5"/><stop class="tone-747-stop" offset="1.000" stop-color="#b2b2cb"/></linearGradient>
 <linearGradient id="p3" gradientUnits="userSpaceOnUse" x1="268.08" y1="29.33" x2="246.34" y2="26.95"><stop class="tone-202-stop" offset="0.000" stop-color="#303037"/><stop class="tone-265-stop" offset="1.000" stop-color="#3f3f48"/></linearGradient>
-<linearGradient id="p4" gradientUnits="userSpaceOnUse" x1="-7.45" y1="88.64" x2="-6.29" y2="74.80"><stop class="tone-722-stop" offset="0.000" stop-color="#acacc4"/><stop class="tone-749-stop" offset="1.000" stop-color="#b3b3cb"/></linearGradient>
-<linearGradient id="p5" gradientUnits="userSpaceOnUse" x1="10.78" y1="116.09" x2="9.68" y2="104.19"><stop class="tone-253-stop" offset="0.000" stop-color="#3d3d44"/><stop class="tone-269-stop" offset="1.000" stop-color="#404049"/></linearGradient>
-<linearGradient id="p6" gradientUnits="userSpaceOnUse" x1="11.66" y1="122.17" x2="10.53" y2="110.28"><stop class="tone-724-stop" offset="0.000" stop-color="#adadc4"/><stop class="tone-751-stop" offset="1.000" stop-color="#b3b3cc"/></linearGradient>
-<linearGradient id="p7" gradientUnits="userSpaceOnUse" x1="21.88" y1="130.04" x2="19.91" y2="118.35"><stop class="tone-255-stop" offset="0.000" stop-color="#3d3d45"/><stop class="tone-267-stop" offset="1.000" stop-color="#404048"/></linearGradient>
-<linearGradient id="p8" gradientUnits="userSpaceOnUse" x1="-2.63" y1="84.51" x2="-2.99" y2="96.21"><stop class="tone-478-stop" offset="0.000" stop-color="#727282"/><stop class="tone-737-stop" offset="1.000" stop-color="#b0b0c8"/></linearGradient>
-<linearGradient id="p9" gradientUnits="userSpaceOnUse" x1="-1.74" y1="98.17" x2="-1.52" y2="85.77"><stop class="tone-255-stop" offset="0.000" stop-color="#3d3d45"/><stop class="tone-269-stop" offset="1.000" stop-color="#404049"/></linearGradient>
+<linearGradient id="p4" gradientUnits="userSpaceOnUse" x1="87.80" y1="-57.80" x2="66.56" y2="-43.82"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
+<linearGradient id="p5" gradientUnits="userSpaceOnUse" x1="105.24" y1="-69.29" x2="84.00" y2="-55.31"><stop class="tone-743-stop" offset="0.000" stop-color="#b1b1ca"/><stop class="tone-775-stop" offset="1.000" stop-color="#b9b9d2"/></linearGradient>
+<linearGradient id="p6" gradientUnits="userSpaceOnUse" x1="-3.66" y1="80.00" x2="-4.26" y2="93.03"><stop class="tone-508-stop" offset="0.000" stop-color="#79798a"/><stop class="tone-784-stop" offset="1.000" stop-color="#bbbbd5"/></linearGradient>
 </defs>
 <rect class="tone-541" x="0" y="0" width="227" height="22" fill="#818193"/>
 <rect class="tone-345" x="0" y="0" width="227" height="1" fill="#52525e"/>
@@ -26,11 +23,14 @@
 <rect x="243" y="57" width="22" height="12" fill="url(#p3)"/>
 </g>
 <g transform="translate(-31 -86)">
-<rect x="162" y="90" width="25" height="13" fill="url(#p4)"/>
-<rect x="162" y="90" width="24" height="12" fill="url(#p5)"/>
-<rect x="188" y="90" width="25" height="13" fill="url(#p6)"/>
-<rect x="188" y="90" width="24" height="12" fill="url(#p7)"/>
-<rect x="214" y="90" width="25" height="13" fill="url(#p8)"/>
-<rect x="214" y="90" width="24" height="12" fill="url(#p9)"/>
+<rect x="162" y="90" width="24" height="13" fill="url(#p4)"/>
+<rect class="tone-276" x="162" y="90" width="23" height="12" fill="#42424b"/>
+<rect x="163" y="91" width="22" height="11" fill="#000000"/>
+<rect x="187" y="90" width="24" height="13" fill="url(#p5)"/>
+<rect class="tone-276" x="187" y="90" width="23" height="12" fill="#42424b"/>
+<rect x="188" y="91" width="22" height="11" fill="#000000"/>
+<rect x="212" y="90" width="25" height="13" fill="url(#p6)"/>
+<rect class="tone-276" x="212" y="90" width="24" height="12" fill="#42424b"/>
+<rect x="213" y="91" width="23" height="11" fill="#000000"/>
 </g>
 </svg>

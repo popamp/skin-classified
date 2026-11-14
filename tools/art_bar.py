@@ -6,20 +6,22 @@ moved onto the bar, so both look the same and the fits are the same ones.
 """
 from contextlib import contextmanager
 
-from art_main import PLAY_MODE_WELLS, REPEAT_WELL, TOGGLE_WELLS, TRANSPORT_WELLS, wells
+from art_main import TOGGLE_WELLS, TRANSPORT_WELLS, wells
 from art_parts import BLACK, face, glyph, socket
 from art_sliders import panel_fit
 
 BAR_H = 22
 # The bar's fixed ends, and the narrowest bar
 BAR_LEFT, BAR_RIGHT, BAR_MIN = 322, 227, 640
-# The title bar's buttons a pixel larger, in a black box, so they sit in the middle of the bar
-BAR_BUTTON = 10
+# The title bar's buttons in a black box as tall as the wells' black frames, so they line up with them
+BAR_BUTTON = 11
 # Where the main window's transport row (its wells start at 14, 86) goes on the bar
 TRANSPORT_AT = (2, -86)
 # Where the main window's EQ and PL wells, and its shuffle and repeat wells, go on the bar
 TOGGLES_AT = (-137, -53)
 PLAY_MODES_AT = (-31, -86)
+# The black frames of the shuffle sprite's two buttons and the repeat sprite's one, where the main window shows them
+PLAY_MODE_FRAMES = ((163, 91, 22, 11), (188, 91, 22, 11), (213, 91, 23, 11))
 # The display: its well from x, the clock's colon from the clock's left
 DISPLAY_X = 163
 CLOCK, COLON = (178, 4), (36, 4, 7)
@@ -97,28 +99,33 @@ def right(s):
     with moved(s, *TOGGLES_AT):
         for frame, _ in TOGGLE_WELLS:
             socket(s, frame)
+    # black frames as well: the bar shows only the sprites' insides of them, and the shuffle sprite leaves out the first's left side;
+    # their rims are the EQ well's, as the main window's own rims there lie under the sprites
+    (ex, ey, _, _), _ = TOGGLE_WELLS[0]
     with moved(s, *PLAY_MODES_AT):
-        for frame, *_ in PLAY_MODE_WELLS:
-            socket(s, frame)
-        socket(s, REPEAT_WELL)
+        for x, y, w, h in PLAY_MODE_FRAMES:
+            with s.source(dx=ex - x, dy=ey - y):
+                wells(s, [(x, y, w, h)])
 
 
-# The title bar's buttons the bar has: their place in the titlebar sheet (normal, pressed) and where their face is measured
-BUTTONS = (("menu", (0, 1), (0, 10), 0), ("close", (19, 1), (19, 10), -9))
+# The title bar's buttons the bar has, and the middle of each glyph; both take the menu button's face (normal, pressed)
+BUTTONS = (("menu", 4), ("close", 3.5))
+FACES = (1, 10)
+GLYPH_MIDDLE_Y = 3.5
 
 
 def buttons(s):
-    """Main Menu and Close side by side, the pressed ones under them: the title bar's faces, a row taller."""
-    b = BAR_BUTTON
-    for i, (name, *faces, sample_dx) in enumerate(BUTTONS):
-        for row, (fx, fy) in enumerate(faces):
+    """Main Menu and Close side by side, the pressed ones under them: one face from the title bar, each glyph in its middle."""
+    b, inner = BAR_BUTTON, BAR_BUTTON - 2
+    for i, (name, middle_x) in enumerate(BUTTONS):
+        for row, fy in enumerate(FACES):
             x, y = b * i, b * row
             s.rect(x, y, b, b, BLACK)
-            s.add(f'<g transform="translate({x + 1} {y + 1}) scale(1 {8 / 7:.6f}) translate({-fx} {-fy})">')
-            with s.source(ref="titlebar", dx=sample_dx, absolute=True):
-                face(s, fx, fy, 8, 7)
+            s.add(f'<g transform="translate({x + 1} {y + 1}) scale({inner / 8:.6f} {inner / 7:.6f}) translate(0 {-fy})">')
+            with s.source(ref="titlebar", absolute=True):
+                face(s, 0, fy, 8, 7)
             s.add("</g>")
-            glyph(s, name, x + 1, y + 1.5)
+            glyph(s, name, x + b / 2 - middle_x, y + b / 2 - GLYPH_MIDDLE_Y)
 
 
 PICTURES = {"left": (BAR_LEFT, BAR_H, left), "mid": (8, BAR_H, mid), "right": (BAR_RIGHT, BAR_H, right), "buttons": (2 * BAR_BUTTON, 2 * BAR_BUTTON, buttons)}
