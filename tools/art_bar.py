@@ -15,6 +15,8 @@ BAR_H = 22
 BAR_LEFT, BAR_RIGHT, BAR_MIN = 322, 227, 640
 # The title bar's buttons in a black box as tall as the wells' black frames, so they line up with them
 BAR_BUTTON = 11
+# Main Menu from the bar's left end, in the middle of the metal before the transport's rim (at 16); Close as far from the right end
+BUTTON_INSET = 3
 # Where the main window's transport row (its wells start at 14, 86) goes on the bar
 TRANSPORT_AT = (2, -86)
 # Where the main window's EQ and PL wells, and its shuffle and repeat wells, go on the bar
@@ -60,10 +62,10 @@ def body(s, x, w):
 
 
 def edge(s, x, w):
-    """The bar's frame, the window's outer bevel top and bottom, over whatever reaches the edge, so it runs unbroken."""
-    (tl0, br0, _, _), _, _ = colours(s)
-    s.rect(x, 0, w, 1, tl0)
-    s.rect(x, BAR_H - 1, w, 1, br0)
+    """The bar's edge top and bottom in the panel's colour, over the wells' rims that reach it, so it runs unbroken."""
+    _, panel, _ = colours(s)
+    s.rect(x, 0, w, 1, panel)
+    s.rect(x, BAR_H - 1, w, 1, panel)
 
 
 def display(s, x, w, left=False, right=False):

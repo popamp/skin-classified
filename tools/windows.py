@@ -1,5 +1,5 @@
 """The windows skin.toml lays out itself: the main window's bar view and the media library."""
-from art_bar import BAR_BUTTON, BAR_H, BAR_LEFT, BAR_MIN, BAR_RIGHT, CLOCK, DISPLAY_X, GROOVE_Y, PLAY_MODES_AT
+from art_bar import BAR_BUTTON, BUTTON_INSET, BAR_H, BAR_LEFT, BAR_MIN, BAR_RIGHT, CLOCK, DISPLAY_X, GROOVE_Y, PLAY_MODES_AT
 from art_main import PLAY_MODES, REPEAT_SPRITE, SHUFFLE_SPRITE
 
 BAR_WINDOW = f"""
@@ -82,7 +82,7 @@ def bar_window():
     e += element("image", (BAR_LEFT, 0, end(0), BAR_H), normal="bar/mid.svg", fill="tile")
     e += element("image", (end(0), 0, "end", BAR_H), normal="bar/right.svg")
     b, mid = BAR_BUTTON, (BAR_H - BAR_BUTTON) // 2
-    e += element("button", (4, mid, b, b), normal=bar_area(0, 0), pressed=bar_area(0, b),
+    e += element("button", (BUTTON_INSET, mid, b, b), normal=bar_area(0, 0), pressed=bar_area(0, b),
                  menu_press="main", cursor="mainmenu", tip="Main Menu")  # fmt: skip
     transport = (
         (0, 23, "previous", "Previous", {"shift": "back5s", "ctrl": "start-of-list", "menu": "previous"}),
@@ -121,8 +121,7 @@ def bar_window():
     for frame in shuffle:
         e += play_mode(frame, SHUFFLE_SPRITE, "shuffle", "toggle-shuffle", menu="shuffle")
     e += play_mode(repeat, REPEAT_SPRITE, "repeat", "toggle-repeat", menu="repeat")
-    # as far from the right end as Main Menu is from the left
-    e += element("button", (end(BAR_RIGHT - 4 - b), mid, end(BAR_RIGHT - 4), mid + b), normal=bar_area(b, 0), pressed=bar_area(b, b),
+    e += element("button", (end(BAR_RIGHT - BUTTON_INSET - b), mid, end(BAR_RIGHT - BUTTON_INSET), mid + b), normal=bar_area(b, 0), pressed=bar_area(b, b),
                  click="exit", tip="Close")  # fmt: skip
     return [BAR_WINDOW, *e]
 
