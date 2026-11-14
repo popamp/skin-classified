@@ -9,9 +9,10 @@ BOLT = ((-10.43, -59.4), (23.46, -59.4), (0, -19.92), (30.91, -19.92), (-19.74, 
 LOGO_CX, LOGO_CY = 253.5, 94
 DISPLAY = "M11 21H265V53H107A7 7 0 0 0 100 60V67H11Z"
 TAB_EDGE = "M265 53.5H107A6.5 6.5 0 0 0 100.5 60V67"
-# The shuffle icons' bars in a 22 x 11 button, where EQ and PL have their letters
-BARS_MIXED = ((9, 5, 2, 3), (12, 3, 2, 5), (15, 6, 2, 2), (18, 4, 2, 4))
-BARS_RISING = ((9, 6, 2, 2), (12, 5, 2, 3), (15, 4, 2, 4), (18, 3, 2, 5))
+# The shuffle icons' bars in a 22 x 11 button, where EQ and PL have their letters: they end two pixels before
+# the frame on the right, as the lamp starts two after it on the left
+BARS_MIXED = ((8, 5, 2, 3), (11, 3, 2, 5), (14, 6, 2, 2), (17, 4, 2, 4))
+BARS_RISING = ((8, 6, 2, 2), (11, 5, 2, 3), (14, 4, 2, 4), (17, 3, 2, 5))
 ICON_LABEL = {"eq": ("EQ", 9.5, 18), "pl": ("PL", 10, 17.5)}
 WORD_CAP = 5.5
 
