@@ -149,6 +149,9 @@ def library_window(title_width):
                  normal=title | {"area": [0, 0, title_width, rows]}, inactive=title | {"area": [0, 21, title_width, rows]})  # fmt: skip
     e += three("strip", ml.STRIP_TOP, ml.STRIP_H, v)
     e += element("image", (0, top, 12, bottom), v, normal=pl(0, 42, 12, 29), fill="tile")
+    # the side's dark band between the frame and the list in the display's metal, so the left margin runs on
+    # from the display down to the position bar in one colour
+    e += element("image", (FRAME, top, ml.WELL_X, bottom), v, normal=ml_area("strip-left", FRAME, 0, ml.WELL_X - FRAME, 2), fill="tile")
     e += element("image", ("end-20", top, "end", bottom), v, normal=pl(31, 42, 20, 29), fill="tile")
     e += three("seek", bottom, ml.SEEK_H, v)
     # the bottom: the playlist's tile between two corners of the library's own, the right one with the resize grip

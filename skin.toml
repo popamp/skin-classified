@@ -1356,6 +1356,12 @@ fill = "tile"
 
 [[window.normal.element]]
 type = "image"
+edges = [6, 63, 10, "end-52"]
+normal = { file = "ml/strip-left.svg", area = [6, 0, 4, 2] }
+fill = "tile"
+
+[[window.normal.element]]
+type = "image"
 edges = ["end-20", 63, "end", "end-52"]
 normal = { file = "sheets/pledit.svg", area = [31, 42, 20, 29] }
 fill = "tile"
