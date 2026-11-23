@@ -1474,11 +1474,11 @@ text = "khz"
 
 [[window.normal.element]]
 type = "vis"
-edges = [212, 21, "end-12", 57]
+edges = [212, 21, "end-9", 57]
 
 [[window.normal.element]]
 type = "button"
-edges = [212, 21, "end-12", 57]
+edges = [212, 21, "end-9", 57]
 press = "cycle-vis-mode"
 menu = "vis"
 
@@ -1490,23 +1490,23 @@ thumb = { normal = { file = "sheets/pledit.svg", area = [52, 53, 8, 18] }, press
 
 [[window.normal.element]]
 type = "image"
-edges = [12, "end-49", 18, "end-41"]
+edges = [10, "end-49", 16, "end-41"]
 normal = { file = "sheets/posbar.svg", area = [0, 1, 6, 8] }
 
 [[window.normal.element]]
 type = "image"
-edges = [18, "end-49", "end-17", "end-41"]
+edges = [16, "end-49", "end-12", "end-41"]
 normal = { file = "sheets/posbar.svg", area = [100, 1, 8, 8] }
 fill = "tile"
 
 [[window.normal.element]]
 type = "image"
-edges = ["end-17", "end-49", "end-11", "end-41"]
+edges = ["end-12", "end-49", "end-6", "end-41"]
 normal = { file = "sheets/posbar.svg", area = [242, 1, 6, 8] }
 
 [[window.normal.element]]
 type = "slider"
-edges = [12, "end-49", "end-11", "end-41"]
+edges = [10, "end-49", "end-6", "end-41"]
 value = "position"
 thumb = { normal = { file = "sheets/posbar.svg", area = [248, 1, 29, 8] }, pressed = { file = "sheets/posbar.svg", area = [278, 1, 29, 8] } }
 thumb_len = 29

@@ -37,7 +37,9 @@ STRIP_TOP, STRIP_H = TITLE_ROWS, 48
 LIST_TOP = STRIP_TOP + STRIP_H
 WELL_TOP, WELL_H = 3, 42  # the display's well in the strip, rims included
 STRIP_LEFT, STRIP_RIGHT, TILE = 220, 20, 8
-WELL_X, WELL_END = 12, 9  # the well from the window's left, and its right rim this far from the window's end
+# The well from the window's left, and its right end this far from the window's end: the list's block's outer
+# columns, so the display and the list stand in frames of one width
+WELL_X, WELL_END = 10, 6
 SEEK_H = 14  # the band over the bottom pieces
 GROOVE_TOP = 3  # the position groove in the band, 8 high
 # In the window: the play state, the clock (its colon from it), the song title's row, the rates' row
@@ -97,7 +99,7 @@ def seek_band(s, w, left=False, right=False):
     """The band's metal, the list's lower rim along its top."""
     ground(s, w, SEEK_H)
     _, _, rims = colours(s)
-    x0, x1 = (WELL_X - 1 if left else 0), (w - WELL_END + 2 if right else w)
+    x0, x1 = (WELL_X if left else 0), (w - WELL_END if right else w)
     s.rect(x0, 0, x1 - x0, 1, rims["bottom"])
 
 

@@ -207,7 +207,7 @@ def seek_bar(v):
     """The position bar along the band: the main window's groove, its ends and a tiled middle, and its thumb."""
     y0 = 38 + ml.SEEK_H - ml.GROOVE_TOP
     y1 = y0 - 8
-    left, right = ml.WELL_X, ml.WELL_END + 2
+    left, right = ml.WELL_X, ml.WELL_END
     e = element("image", (left, f"end-{y0}", left + 6, f"end-{y1}"), v, normal=area("posbar", 0, 1, 6, 8))
     e += element("image", (left + 6, f"end-{y0}", f"end-{right + 6}", f"end-{y1}"), v, normal=area("posbar", 100, 1, 8, 8), fill="tile")
     e += element("image", (f"end-{right + 6}", f"end-{y0}", f"end-{right}", f"end-{y1}"), v, normal=area("posbar", 242, 1, 6, 8))
