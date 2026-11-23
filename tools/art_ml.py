@@ -31,7 +31,9 @@ PICTURES = {"title": (TITLE_AT, title), "menu": (MENU_AT, menu)}
 # --- the display under the title and the band with the position bar over the bottom pieces ------------------
 # Drawn on the main sheet with the bar view's colours.
 
-STRIP_TOP, STRIP_H = 20, 48
+# The title's rows above the playlist's top bevel: the library's display, not its list, comes under them
+TITLE_ROWS = 15
+STRIP_TOP, STRIP_H = TITLE_ROWS, 48
 LIST_TOP = STRIP_TOP + STRIP_H
 WELL_TOP, WELL_H = 3, 42  # the display's well in the strip, rims included
 STRIP_LEFT, STRIP_RIGHT, TILE = 220, 20, 8

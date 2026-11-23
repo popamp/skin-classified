@@ -135,17 +135,18 @@ def library_window(title_width):
     under the title, the position bar over the bottom and the transport in the bottom's middle."""
     pl = lambda x, y, w, h: area("pledit", x, y, w, h)
     ml_area = lambda name, x, y, w, h: {"file": f"ml/{name}.svg", "area": [x, y, w, h]}
-    focus = lambda x: {"normal": pl(x, 0, 25, 20), "inactive": pl(x, 21, 25, 20)}
+    rows = ml.TITLE_ROWS
+    focus = lambda x: {"normal": pl(x, 0, 25, rows), "inactive": pl(x, 21, 25, rows)}
     v, top, bottom = "normal", ml.LIST_TOP, f"end-{38 + ml.SEEK_H}"
     e = [LIBRARY_WINDOW]
-    e += element("image", (0, 0, 25, 20), v, **focus(0))
-    e += element("image", (25, 0, "end-25", 20), v, **focus(127), fill="tile")
-    e += element("image", ("end-25", 0, "end", 20), v, normal=ml_area("title-right", 0, 0, 25, 20),
-                 inactive=ml_area("title-right", 0, 21, 25, 20))  # fmt: skip
+    e += element("image", (0, 0, 25, rows), v, **focus(0))
+    e += element("image", (25, 0, "end-25", rows), v, **focus(127), fill="tile")
+    e += element("image", ("end-25", 0, "end", rows), v, normal=ml_area("title-right", 0, 0, 25, rows),
+                 inactive=ml_area("title-right", 0, 21, 25, rows))  # fmt: skip
     half = title_width // 2
     title = {"file": "ml/title.svg"}
-    e += element("image", (f"center-{half}", 0, f"center+{title_width - half}", 20), v,
-                 normal=title | {"area": [0, 0, title_width, 20]}, inactive=title | {"area": [0, 21, title_width, 20]})  # fmt: skip
+    e += element("image", (f"center-{half}", 0, f"center+{title_width - half}", rows), v,
+                 normal=title | {"area": [0, 0, title_width, rows]}, inactive=title | {"area": [0, 21, title_width, rows]})  # fmt: skip
     e += three("strip", ml.STRIP_TOP, ml.STRIP_H, v)
     e += element("image", (0, top, 12, bottom), v, normal=pl(0, 42, 12, 29), fill="tile")
     e += element("image", ("end-20", top, "end", bottom), v, normal=pl(31, 42, 20, 29), fill="tile")
