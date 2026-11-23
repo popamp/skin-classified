@@ -127,7 +127,8 @@ def bar_window():
     return [BAR_WINDOW, *e]
 
 
-FRAME = 6  # the window's frame along its sides, in the playlist's pieces
+FRAME = ml.FRAME
+RIM = 2  # the list's left rim in the playlist's side
 
 
 def library_window(title_width):
@@ -148,10 +149,8 @@ def library_window(title_width):
     e += element("image", (f"center-{half}", 0, f"center+{title_width - half}", rows), v,
                  normal=title | {"area": [0, 0, title_width, rows]}, inactive=title | {"area": [0, 21, title_width, rows]})  # fmt: skip
     e += three("strip", ml.STRIP_TOP, ml.STRIP_H, v)
-    e += element("image", (0, top, 12, bottom), v, normal=pl(0, 42, 12, 29), fill="tile")
-    # the side's dark band between the frame and the list in the display's metal, so the left margin runs on
-    # from the display down to the position bar in one colour
-    e += element("image", (FRAME, top, ml.WELL_X, bottom), v, normal=ml_area("strip-left", FRAME, 0, ml.WELL_X - FRAME, 2), fill="tile")
+    # the list's left rim from the playlist's side, right inside the frame as the list's right end is
+    e += element("image", (FRAME, top, FRAME + RIM, bottom), v, normal=pl(12 - RIM, 42, RIM, 29), fill="tile")
     e += element("image", ("end-20", top, "end", bottom), v, normal=pl(31, 42, 20, 29), fill="tile")
     e += three("seek", bottom, ml.SEEK_H, v)
     # the bottom: the playlist's tile between two corners of the library's own, the right one with the resize grip
@@ -169,7 +168,7 @@ def library_window(title_width):
                  cursor="pclose", tip="Close")  # fmt: skip
     e += display(v)
     thumb = {"normal": pl(52, 53, 8, 18), "pressed": pl(61, 53, 8, 18)}
-    e += element("library", (12, top, "end-7", bottom), v, menu="library", thumb=thumb)
+    e += element("library", (FRAME + RIM, top, "end-7", bottom), v, menu="library", thumb=thumb)
     e += seek_bar(v)
     e += bottom_controls(v)
     e += element("resize", ("end-20", "end-20", "end", "end"), v, cursor="psize")

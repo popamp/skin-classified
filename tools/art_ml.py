@@ -37,9 +37,10 @@ STRIP_TOP, STRIP_H = TITLE_ROWS, 48
 LIST_TOP = STRIP_TOP + STRIP_H
 WELL_TOP, WELL_H = 3, 42  # the display's well in the strip, rims included
 STRIP_LEFT, STRIP_RIGHT, TILE = 220, 20, 8
-# The well from the window's left, and its right end this far from the window's end: the list's block's outer
-# columns, so the display and the list stand in frames of one width
-WELL_X, WELL_END = 10, 6
+# The well from the window's left, and its right end this far from the window's end: right inside the frame at
+# both sides, as the list is, so the frame is the same at the left and the right of the display and the list
+FRAME = 6  # the window's frame along its sides, in the playlist's pieces
+WELL_X, WELL_END = FRAME, 6
 SEEK_H = 14  # the band over the bottom pieces
 GROOVE_TOP = 3  # the position groove in the band, 8 high
 # In the window: the play state, the clock (its colon from it), the song title's row, the rates' row
