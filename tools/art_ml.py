@@ -2,7 +2,7 @@
 from art_bar import COLON, colours, moved
 from art_main import TRANSPORT_WELLS, wells
 from art_parts import BLACK, small_button, span_label
-from art_pl import STRIPS, TITLE_SPAN, TITLE_TEXT, button_with_word, title_tile, top_right
+from art_pl import STRIPS, TITLE_SPAN, TITLE_TEXT, button_with_word, grip, title_tile, top_right
 from lettering import fitted_cap, spaced_like
 
 TITLE = "MEDIA LIBRARY"
@@ -29,7 +29,7 @@ PICTURES = {"title": (TITLE_AT, title), "menu": (MENU_AT, menu)}
 
 
 # --- the display under the title and the band with the position bar over the bottom pieces ------------------
-# Drawn on the main sheet with the bar view's colours; the window's sides are the playlist's bottom edges.
+# Drawn on the main sheet with the bar view's colours.
 
 STRIP_TOP, STRIP_H = 20, 48
 LIST_TOP = STRIP_TOP + STRIP_H
@@ -45,23 +45,11 @@ TITLE_ROW = STRIP_TOP + WELL_TOP + 22
 RATE_ROW = STRIP_TOP + WELL_TOP + 33
 KBPS_X, KHZ_X = 16, 66
 VIS_X = STRIP_LEFT - 8  # the visualizer from here to the well's right, a line before it
-LEFT_EDGE, RIGHT_EDGE = (0, 6, 85), (265, 11, 88)  # the playlist's bottom edges: from column, width, measured on row
 
-
-def side(s, x, h, edge):
-    """One of the window's sides `h` high from `x`: the playlist's bottom edge gradient."""
-    sx, w, sy = edge
-    with s.source(ref="pledit", absolute=True):
-        s.hfill(x, 0, w, h, sy, 4, sx)
-
-
-def ground(s, w, h, left=False, right=False):
+def ground(s, w, h):
+    """The bar's panel; the window's sides over it are the playlist's, laid by the skin."""
     _, panel, _ = colours(s)
     s.rect(0, 0, w, h, panel)
-    if left:
-        side(s, 0, h, LEFT_EDGE)
-    if right:
-        side(s, w - RIGHT_EDGE[1], h, RIGHT_EDGE)
 
 
 def well(s, x0, x1, left=False, right=False):
@@ -80,7 +68,7 @@ def well(s, x0, x1, left=False, right=False):
 
 
 def strip_left(s):
-    ground(s, STRIP_LEFT, STRIP_H, left=True)
+    ground(s, STRIP_LEFT, STRIP_H)
     well(s, WELL_X, STRIP_LEFT, left=True)
     cx, cy = CLOCK
     dx, *rows = COLON
@@ -99,13 +87,13 @@ def strip_mid(s):
 
 
 def strip_right(s):
-    ground(s, STRIP_RIGHT, STRIP_H, right=True)
+    ground(s, STRIP_RIGHT, STRIP_H)
     well(s, 0, STRIP_RIGHT - WELL_END, right=True)
 
 
 def seek_band(s, w, left=False, right=False):
     """The band's metal, the list's lower rim along its top."""
-    ground(s, w, SEEK_H, left, right)
+    ground(s, w, SEEK_H)
     _, _, rims = colours(s)
     x0, x1 = (WELL_X - 1 if left else 0), (w - WELL_END + 2 if right else w)
     s.rect(x0, 0, x1 - x0, 1, rims["bottom"])
@@ -127,6 +115,25 @@ def max_pressed(s):
     small_button(s, 62, 43, 8, 7, "max")
 
 
+def bottom_tile(s):
+    """The playlist's middle tile's gradient, which the bottom's corners continue so their bevels join it."""
+    return s.vgrad(72, 38, 185, 10, sy=0)
+
+
+def bottom_left(s):
+    """The bottom's left corner for the library: the side's frame and the bottom's bevel turning up it."""
+    s.hfill(0, 72, 6, 38, 85, 4)
+    s.path("M6 103V110H0V109H1V108H3V107H4V106H5V103Z", bottom_tile(s))
+
+
+def bottom_right(s):
+    """The bottom's right corner for the library: the middle tile with its bevel turning up the side and the
+    resize grip, without the playlist's arrows."""
+    s.hfill(265, 72, 11, 38, 88, 4)
+    s.path("M256 72H270V103H271V105H272V106H273V107H274V108H276V110H256Z", bottom_tile(s))
+    grip(s)
+
+
 def title_right(s):
     for y, _ in STRIPS:
         top_right(s, y, "max")
@@ -142,4 +149,4 @@ STRIP_PICTURES = {
     "seek-right": (STRIP_RIGHT, SEEK_H, lambda s: seek_band(s, STRIP_RIGHT, right=True)),
     "transport": (*TRANSPORT_SIZE, transport),
 }
-PICTURES |= {"title-right": ((153, 0, 25, 41), title_right), "max-pressed": ((61, 42, 10, 9), max_pressed)}
+PICTURES |= {"title-right": ((153, 0, 25, 41), title_right), "bottom-left": ((0, 72, 6, 38), bottom_left), "bottom-right": ((256, 72, 20, 38), bottom_right), "max-pressed": ((61, 42, 10, 9), max_pressed)}

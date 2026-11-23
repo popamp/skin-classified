@@ -1378,19 +1378,31 @@ normal = "ml/seek-right.svg"
 
 [[window.normal.element]]
 type = "image"
-edges = [0, "end-38", 12, "end"]
-normal = { file = "sheets/pledit.svg", area = [0, 72, 12, 38] }
+edges = [0, "end-38", 6, "end"]
+normal = "ml/bottom-left.svg"
 
 [[window.normal.element]]
 type = "image"
-edges = [12, "end-38", "end-20", "end"]
+edges = [6, "end-38", "end-20", "end"]
 normal = { file = "sheets/pledit.svg", area = [179, 0, 25, 38] }
 fill = "tile"
 
 [[window.normal.element]]
 type = "image"
 edges = ["end-20", "end-38", "end", "end"]
-normal = { file = "sheets/pledit.svg", area = [256, 72, 20, 38] }
+normal = "ml/bottom-right.svg"
+
+[[window.normal.element]]
+type = "image"
+edges = [0, 20, 6, "end-7"]
+normal = { file = "sheets/pledit.svg", area = [0, 42, 6, 29] }
+fill = "tile"
+
+[[window.normal.element]]
+type = "image"
+edges = ["end-6", 20, "end", "end-7"]
+normal = { file = "sheets/pledit.svg", area = [45, 42, 6, 29] }
+fill = "tile"
 
 [[window.normal.element]]
 type = "drag"

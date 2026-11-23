@@ -133,6 +133,11 @@ def bottom_right(s):
     s.rect(211, 99, 2, 1, "#ffffff")
     button_with_word(s, 232, "List")
     seek_arrows(s)
+    grip(s)
+
+
+def grip(s):
+    """The resize grip at the bottom's right corner: two light strokes, each with a dark one beside it."""
     light, dark = s.color(267, 94), s.color(266, 96)
     for x0, y0, x1, y1 in ((268, 94, 260.5, 101.5), (268, 97.5, 264, 101.5)):
         s.stroke(f"M{x0 + 1} {y0}L{x1 + 1} {y1}", dark)

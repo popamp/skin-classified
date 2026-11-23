@@ -127,6 +127,9 @@ def bar_window():
     return [BAR_WINDOW, *e]
 
 
+FRAME = 6  # the window's frame along its sides, in the playlist's pieces
+
+
 def library_window(title_width):
     """The media library as TOML: the playlist's frame with a title of its own, the display with the visualizer
     under the title, the position bar over the bottom and the transport in the bottom's middle."""
@@ -147,10 +150,14 @@ def library_window(title_width):
     e += element("image", (0, top, 12, bottom), v, normal=pl(0, 42, 12, 29), fill="tile")
     e += element("image", ("end-20", top, "end", bottom), v, normal=pl(31, 42, 20, 29), fill="tile")
     e += three("seek", bottom, ml.SEEK_H, v)
-    # the bottom: the playlist's left end without its buttons, its tile, and its right end past the List button
-    e += element("image", (0, "end-38", 12, "end"), v, normal=pl(0, 72, 12, 38))
-    e += element("image", (12, "end-38", "end-20", "end"), v, normal=pl(179, 0, 25, 38), fill="tile")
-    e += element("image", ("end-20", "end-38", "end", "end"), v, normal=pl(256, 72, 20, 38))
+    # the bottom: the playlist's tile between two corners of the library's own, the right one with the resize grip
+    e += element("image", (0, "end-38", FRAME, "end"), v, normal="ml/bottom-left.svg")
+    e += element("image", (FRAME, "end-38", "end-20", "end"), v, normal=pl(179, 0, 25, 38), fill="tile")
+    e += element("image", ("end-20", "end-38", "end", "end"), v, normal="ml/bottom-right.svg")
+    # The sides from the title to the bottom's bevel: one picture each, the outer columns of the list's sides,
+    # so the frame runs on along the display and the position bar as it does along the list
+    e += element("image", (0, ml.STRIP_TOP, FRAME, "end-7"), v, normal=pl(0, 42, FRAME, 29), fill="tile")
+    e += element("image", (f"end-{FRAME}", ml.STRIP_TOP, "end", "end-7"), v, normal=pl(51 - FRAME, 42, FRAME, 29), fill="tile")
     e += element("drag", (0, 0, "end-22", ml.STRIP_TOP + ml.WELL_TOP), v, double="toggle-library-maximize", cursor="ptbar")
     e += element("button", ("end-20", 3, "end-11", 12), v, pressed=ml_area("max-pressed", 1, 0, 9, 9),
                  click="toggle-library-maximize", tip="Maximize")  # fmt: skip

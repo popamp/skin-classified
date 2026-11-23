@@ -1,9 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="220" height="48" viewBox="0 0 220 48">
-<defs>
-<linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="0.00" y1="0.00" x2="6.00" y2="0.00"><stop class="tone-351b-stop" offset="0.000" stop-color="#535360"/><stop class="tone-351b-stop" offset="0.167" stop-color="#535360"/><stop class="tone-592-stop" offset="0.167" stop-color="#8d8da1"/><stop class="tone-592-stop" offset="0.333" stop-color="#8d8da1"/><stop class="tone-235-stop" offset="0.333" stop-color="#383840"/><stop class="tone-235-stop" offset="0.500" stop-color="#383840"/><stop class="tone-118-stop" offset="0.500" stop-color="#1c1c20"/><stop class="tone-122-stop" offset="0.833" stop-color="#1d1d21"/><stop class="tone-604-stop" offset="0.833" stop-color="#9090a4"/><stop class="tone-604-stop" offset="1.000" stop-color="#9090a4"/></linearGradient>
-</defs>
 <rect class="tone-541" x="0" y="0" width="220" height="48" fill="#818193"/>
-<rect x="0" y="0" width="6" height="48" fill="url(#p1)"/>
 <rect class="tone-747" x="12" y="3" width="208" height="42" fill="#b2b2cb"/>
 <rect class="tone-265" x="12" y="3" width="208" height="1" fill="#3f3f48"/>
 <rect class="tone-188b" x="12" y="3" width="1" height="41" fill="#2d2d33"/>
