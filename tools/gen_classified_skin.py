@@ -94,6 +94,10 @@ def build(out, ref):
         s = Sheet(fits, "main", w, h, tones)
         draw(s)
         s.save(os.path.join(out, "bar", f"{name}.svg"))
+    for name, (w, h, draw) in art_ml.STRIP_PICTURES.items():
+        s = Sheet(fits, "main", w, h, tones)
+        draw(s)
+        s.save(os.path.join(out, "ml", f"{name}.svg"))
     for name, ((x, y, w, h), draw) in art_ml.PICTURES.items():
         s = Sheet(fits, "pledit", w, h, tones, origin=(x, y))
         draw(s)

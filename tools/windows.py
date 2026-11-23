@@ -1,6 +1,7 @@
 """The windows skin.toml lays out itself: the main window's bar view and the media library."""
 from art_bar import BAR_BUTTON, BUTTON_INSET, BAR_H, BAR_LEFT, BAR_MIN, BAR_RIGHT, CLOCK, DISPLAY_X, GROOVE_Y, PLAY_MODES_AT
 from art_main import PLAY_MODES, REPEAT_SPRITE, SHUFFLE_SPRITE
+import art_ml as ml
 
 BAR_WINDOW = f"""
 # --- the main window's bar view, from the sheets above ---
@@ -22,7 +23,7 @@ empty_press = "nothing"
 wheel_scrolls_list = true
 
 [window.normal]
-size = [275, 116]
+size = [400, 232]
 resize_step = [25, 29]
 cursor = "pnormal\""""
 
@@ -127,36 +128,121 @@ def bar_window():
 
 
 def library_window(title_width):
-    """The media library as TOML: the playlist's frame, with a title and a menu button of its own."""
+    """The media library as TOML: the playlist's frame with a title of its own, the display with the visualizer
+    under the title, the position bar over the bottom and the transport in the bottom's middle."""
     pl = lambda x, y, w, h: area("pledit", x, y, w, h)
+    ml_area = lambda name, x, y, w, h: {"file": f"ml/{name}.svg", "area": [x, y, w, h]}
     focus = lambda x: {"normal": pl(x, 0, 25, 20), "inactive": pl(x, 21, 25, 20)}
-    v = "normal"
+    v, top, bottom = "normal", ml.LIST_TOP, f"end-{38 + ml.SEEK_H}"
     e = [LIBRARY_WINDOW]
     e += element("image", (0, 0, 25, 20), v, **focus(0))
     e += element("image", (25, 0, "end-25", 20), v, **focus(127), fill="tile")
-    e += element("image", ("end-25", 0, "end", 20), v, **focus(153))
+    e += element("image", ("end-25", 0, "end", 20), v, normal=ml_area("title-right", 0, 0, 25, 20),
+                 inactive=ml_area("title-right", 0, 21, 25, 20))  # fmt: skip
     half = title_width // 2
     title = {"file": "ml/title.svg"}
     e += element("image", (f"center-{half}", 0, f"center+{title_width - half}", 20), v,
                  normal=title | {"area": [0, 0, title_width, 20]}, inactive=title | {"area": [0, 21, title_width, 20]})  # fmt: skip
-    e += element("image", (0, 20, 12, "end-38"), v, normal=pl(0, 42, 12, 29), fill="tile")
-    e += element("image", ("end-20", 20, "end", "end-38"), v, normal=pl(31, 42, 20, 29), fill="tile")
-    e += element("image", (12, "end-38", "end-150", "end"), v, normal=pl(179, 0, 25, 38), fill="tile")
-    # the bottom's left end without the Add, Del, Sel and Misc buttons
+    e += three("strip", ml.STRIP_TOP, ml.STRIP_H, v)
+    e += element("image", (0, top, 12, bottom), v, normal=pl(0, 42, 12, 29), fill="tile")
+    e += element("image", ("end-20", top, "end", bottom), v, normal=pl(31, 42, 20, 29), fill="tile")
+    e += three("seek", bottom, ml.SEEK_H, v)
+    # the bottom: the playlist's left end without its buttons, its tile, and its right end past the List button
     e += element("image", (0, "end-38", 12, "end"), v, normal=pl(0, 72, 12, 38))
-    e += element("image", ("end-150", "end-38", "end", "end"), v, normal=pl(126, 72, 150, 38))
-    # the List button, labelled for the library
-    e += element("image", ("end-44", "end-29", "end-22", "end-14"), v, normal="ml/menu.svg")
-    e += element("drag", (0, 0, "end", 20), v, cursor="ptbar")
+    e += element("image", (12, "end-38", "end-20", "end"), v, normal=pl(179, 0, 25, 38), fill="tile")
+    e += element("image", ("end-20", "end-38", "end", "end"), v, normal=pl(256, 72, 20, 38))
+    e += element("drag", (0, 0, "end-22", ml.STRIP_TOP + ml.WELL_TOP), v, double="toggle-library-maximize", cursor="ptbar")
+    e += element("button", ("end-20", 3, "end-11", 12), v, pressed=ml_area("max-pressed", 1, 0, 9, 9),
+                 click="toggle-library-maximize", tip="Maximize")  # fmt: skip
     e += element("button", ("end-11", 3, "end-2", 12), v, pressed=pl(52, 42, 9, 9), click="toggle-library-window",
                  cursor="pclose", tip="Close")  # fmt: skip
+    e += display(v)
     thumb = {"normal": pl(52, 53, 8, 18), "pressed": pl(61, 53, 8, 18)}
-    e += element("library", (12, 20, "end-7", "end-38"), v, menu="library", thumb=thumb)
-    e += element("text", ("end-143", "end-28", "end-58", "end-22"), v, text="library-status")
-    e += element("text", ("end-82", "end-14", "end-52", "end-8"), v, text="playlist-clock", hide="stopped")
-    mini = ((5, 8, "previous"), (14, 8, "play"), (23, 8, "pause"), (32, 8, "stop"), (41, 8, "next"), (50, 9, "open-file"))
-    for x, w, click in mini:
-        e += element("button", (f"end-{150 - x}", "end-16", f"end-{150 - x - w}", "end-9"), v, click=click)
-    e += element("button", ("end-44", "end-29", "end-22", "end-14"), v, menu_release="library", tip="Library Menu")
+    e += element("library", (12, top, "end-7", bottom), v, menu="library", thumb=thumb)
+    e += seek_bar(v)
+    e += bottom_controls(v)
     e += element("resize", ("end-20", "end-20", "end", "end"), v, cursor="psize")
+    return e
+
+
+def three(name, top, h, v):
+    """A row of the library's pieces `h` high: `name`-left, `name`-mid tiled and `name`-right."""
+    at = lambda part: {"normal": f"ml/{name}-{part}.svg"}
+    bottom = top + h if isinstance(top, int) else f"end-{int(top[4:]) - h}"
+    left = (0, top, ml.STRIP_LEFT, h) if isinstance(top, int) else (0, top, ml.STRIP_LEFT, bottom)
+    e = element("image", left, v, **at("left"))
+    e += element("image", (ml.STRIP_LEFT, top, f"end-{ml.STRIP_RIGHT}", bottom), v, **at("mid"), fill="tile")
+    e += element("image", (f"end-{ml.STRIP_RIGHT}", top, "end", bottom), v, **at("right"))
+    return e
+
+
+def display(v):
+    """The display's song block and its visualizer."""
+    cx, cy = ml.CLOCK
+    e = []
+    for sx, state in ((0, "playing"), (9, "paused"), (18, "stopped")):
+        e += element("image", (*ml.STATE, 9, 9), v, normal=area("playpaus", sx, 0, 9, 9), show=state)
+    e += element("clock", (cx, cy, 63, 13), v, hide="stopped")
+    e += element("button", (cx, cy, 63, 13), v, press="toggle-time-mode", menu="time")
+    e += element("marquee", (ml.STATE[0], ml.TITLE_ROW, ml.VIS_X - ml.STATE[0] - 8, 10), v, double="file-info", cursor="songname",
+                 tip="Song Title (right-click for options)", menu="song-title")  # fmt: skip
+    for x, text in ((ml.KBPS_X, "kbps"), (ml.KHZ_X, "khz")):
+        e += element("text", (x, ml.RATE_ROW, 15, 6), v, text=text)
+    top, bottom = ml.STRIP_TOP + ml.WELL_TOP + 3, ml.STRIP_TOP + ml.WELL_TOP + ml.WELL_H - 3
+    vis = (ml.VIS_X, top, f"end-{ml.WELL_END + 3}", bottom)
+    e += element("vis", vis, v)
+    e += element("button", vis, v, press="cycle-vis-mode", menu="vis")
+    return e
+
+
+def seek_bar(v):
+    """The position bar along the band: the main window's groove, its ends and a tiled middle, and its thumb."""
+    y0 = 38 + ml.SEEK_H - ml.GROOVE_TOP
+    y1 = y0 - 8
+    left, right = ml.WELL_X, ml.WELL_END + 2
+    e = element("image", (left, f"end-{y0}", left + 6, f"end-{y1}"), v, normal=area("posbar", 0, 1, 6, 8))
+    e += element("image", (left + 6, f"end-{y0}", f"end-{right + 6}", f"end-{y1}"), v, normal=area("posbar", 100, 1, 8, 8), fill="tile")
+    e += element("image", (f"end-{right + 6}", f"end-{y0}", f"end-{right}", f"end-{y1}"), v, normal=area("posbar", 242, 1, 6, 8))
+    thumb = {"normal": area("posbar", 248, 1, 29, 8), "pressed": area("posbar", 278, 1, 29, 8)}
+    e += element("slider", (left, f"end-{y0}", f"end-{right}", f"end-{y1}"), v, value="position", thumb=thumb, thumb_len=29,
+                 live=False, show="seekable", cursor="posbar", menu="seek")  # fmt: skip
+    return e
+
+
+def centre(dx):
+    """A place `dx` from the window's middle."""
+    return f"center+{dx}" if dx >= 0 else f"center-{-dx}"
+
+
+def bottom_controls(v):
+    """In the bottom: the status in the playlist's well, the transport in the main window's wells in the middle
+    (its Play plays the track picked in the library), the volume and the menu button."""
+    e = element("image", (11, "end-31", 105, "end-19"), v, normal=area("pledit", 130, 79, 94, 12))
+    e += element("text", (14, "end-28", 102, "end-22"), v, text="library-status")
+    (tw, th), half = ml.TRANSPORT_SIZE, ml.TRANSPORT_SIZE[0] // 2
+    row = 34  # the transport picture's top, from the window's bottom
+    e += element("image", (centre(-half), f"end-{row}", centre(tw - half), f"end-{row - th}"), v, normal="ml/transport.svg")
+    fx, fy = ml.TRANSPORT_FROM
+    transport = (
+        (0, 23, "previous", "Previous", {"shift": "back5s", "ctrl": "start-of-list", "menu": "previous"}),
+        (23, 23, "library-play", "Play the picked track", {"shift": "open-file", "ctrl": "open-url", "menu": "play"}),
+        (46, 23, "pause", "Pause", {"menu": "pause"}),
+        (69, 23, "stop", "Stop", {"shift": "stop-fadeout", "ctrl": "stop-after-current", "menu": "stop"}),
+        (92, 22, "next", "Next", {"shift": "fwd5s", "ctrl": "end-of-list", "menu": "next"}),
+    )
+    x0, y0 = 16 - fx - half, row - (88 - fy)  # the main window has the buttons at 16, 88
+    for sx, w, click, tip, more in transport:
+        e += element("button", (centre(x0 + sx), f"end-{y0}", centre(x0 + sx + w), f"end-{y0 - 18}"), v,
+                     normal=area("cbuttons", sx, 0, w, 18), pressed=area("cbuttons", sx, 18, w, 18), click=click, **more, tip=tip)  # fmt: skip
+    ox, oy = 136 - fx - half, row - (89 - fy)  # and Open at 136, 89
+    e += element("button", (centre(ox), f"end-{oy}", centre(ox + 22), f"end-{oy - 16}"), v, normal=area("cbuttons", 114, 0, 22, 16),
+                 pressed=area("cbuttons", 114, 16, 22, 16), click="open-file", shift="open-folder", ctrl="open-url", menu="eject",
+                 tip="Open")  # fmt: skip
+    track = {"file": "sheets/volume.svg", "first": [0, 0, 68, 13], "step": [0, 15], "count": 28}
+    thumb = {k: area("volume", x, 422, 14, 11) | {"offset": [0, 1]} for k, x in (("normal", 15), ("pressed", 0))}
+    e += element("slider", ("end-120", "end-28", "end-52", "end-15"), v, value="volume", track=track, thumb=thumb, thumb_len=14,
+                 reset=200, wheel_step=8, cursor="volbal", tip="Volume")  # fmt: skip
+    # the List button, labelled for the library
+    e += element("image", ("end-44", "end-29", "end-22", "end-14"), v, normal="ml/menu.svg")
+    e += element("button", ("end-44", "end-29", "end-22", "end-14"), v, menu_release="library", tip="Library Menu")
     return e

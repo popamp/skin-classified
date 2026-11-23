@@ -28,6 +28,7 @@ GLYPHS = {
     "min": ("f", "M2 3h3v1H2z"),
     "close": ("s", "M1.4 1.4L5.6 5.6M5.6 1.4L1.4 5.6"),
     "dash": ("f", "M2 3h4v1H2z"),
+    "max": ("f", "M1 1h6v2H1zM1 3h1v2H1zM6 3h1v2H6zM1 5h6v1H1z"),
     "unshade": ("f", "M1 1h5v2H2v2h5v1H1zM4 3h3v2H4z"),
     "prev": ("f", "M2 1h1v5H2zM6 1v5L3 3.5Z"),
     "play": ("f", "M3 1v5L6 3.5Z"),

@@ -45,7 +45,8 @@ def top_tile(s, y):
     gold_rule(s, 127, y + 5, 25)
 
 
-def top_right(s, y):
+def top_right(s, y, glyph="dash"):
+    """The title's right end: `glyph`'s button (the shade's dash on the playlist) and Close."""
     strip_ground(s, 153, y, 25)
     s.hfill(153, y + 16, 18, 3, y + 16, 3)
     s.rect(170, y + 19, 1, 1, s.color(170, y + 18))
@@ -53,7 +54,7 @@ def top_right(s, y):
     for x, top in ((171, 16), (172, 13), (173, 15), (174, 14), (175, 12), (176, 2), (177, 1)):
         s.line(x, y + top, 20 - top)
     s.path(f"M173 {y + 13}h2v1h-1v1h-1z", s.color(173, y + 13))
-    boxed(s, 158, y + 4, "dash")
+    boxed(s, 158, y + 4, glyph)
     boxed(s, 167, y + 4, "unshade", sample_dx=-9)
 
 
